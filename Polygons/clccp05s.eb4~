@@ -1,0 +1,47 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace Polygons
+{
+    public partial class Form1 : Form
+    {
+        int x, y;
+        Color col, pen;
+        Point[] p;
+        public Form1()
+        {
+            InitializeComponent();
+            
+        }
+
+        private void Form1_Paint(object sender, PaintEventArgs e)
+        {
+            x = this.ClientSize.Width / 2 - 10;
+            y = this.ClientSize.Height / 2 - 10;
+            col = Color.Red;
+            pen = Color.Green;
+            p = new Point[3];
+            p[0] = new Point(x, y);
+            p[1] = new Point(x*2, y*2);
+            p[2] = new Point(x, y*3);
+            Triangle t = new Triangle(p, col, pen, x, y);
+            //t.Draw(e.Graphics);
+            Rectangl s = new Rectangl(new Rectangle(50, 50, 150, 100), col, pen, x, y);
+            //s.Draw(e.Graphics);
+            Circle c = new Circle(col, pen, x, y);
+            c.Draw(e.Graphics);
+        }
+
+        private void Form1_Resize(object sender, EventArgs e)
+        {
+            Invalidate();
+        }
+    }
+}

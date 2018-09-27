@@ -1,0 +1,27 @@
+D:\OOP\10 класс\Polygons\Polygons\bin\Debug\Polygons.exe.config
+D:\oop\10 класс\Polygons\Polygons\obj\Debug\Polygons.csprojResolveAssemblyReference.cache
+D:\oop\10 класс\Polygons\Polygons\obj\Debug\Polygons.Form1.resources
+D:\oop\10 класс\Polygons\Polygons\obj\Debug\Polygons.Properties.Resources.resources
+D:\oop\10 класс\Polygons\Polygons\obj\Debug\Polygons.csproj.GenerateResource.Cache
+D:\oop\10 класс\Polygons\Polygons\bin\Debug\Polygons.exe
+D:\oop\10 класс\Polygons\Polygons\bin\Debug\Polygons.pdb
+D:\oop\10 класс\Polygons\Polygons\obj\Debug\Polygons.exe
+D:\oop\10 класс\Polygons\Polygons\obj\Debug\Polygons.pdb
+Z:\ООП\Polygons\Polygons\bin\Debug\Polygons.exe.config
+Z:\ООП\Polygons\Polygons\obj\Debug\Polygons.exe
+Z:\ООП\Polygons\Polygons\obj\Debug\Polygons.pdb
+Z:\ООП\Polygons\Polygons\bin\Debug\Polygons.exe
+Z:\ООП\Polygons\Polygons\bin\Debug\Polygons.pdb
+Z:\ООП\Polygons\Polygons\obj\Debug\Polygons.csprojResolveAssemblyReference.cache
+Z:\ООП\Polygons\Polygons\obj\Debug\Polygons.Form1.resources
+Z:\ООП\Polygons\Polygons\obj\Debug\Polygons.Properties.Resources.resources
+Z:\ООП\Polygons\Polygons\obj\Debug\Polygons.csproj.GenerateResource.Cache
+Z:\ООП\Polygons\Polygons\Polygons\bin\Debug\Polygons.exe.config
+Z:\ООП\Polygons\Polygons\Polygons\obj\Debug\Polygons.exe
+Z:\ООП\Polygons\Polygons\Polygons\obj\Debug\Polygons.pdb
+Z:\ООП\Polygons\Polygons\Polygons\bin\Debug\Polygons.exe
+Z:\ООП\Polygons\Polygons\Polygons\bin\Debug\Polygons.pdb
+Z:\ООП\Polygons\Polygons\Polygons\obj\Debug\Polygons.csprojResolveAssemblyReference.cache
+Z:\ООП\Polygons\Polygons\Polygons\obj\Debug\Polygons.Form1.resources
+Z:\ООП\Polygons\Polygons\Polygons\obj\Debug\Polygons.Properties.Resources.resources
+Z:\ООП\Polygons\Polygons\Polygons\obj\Debug\Polygons.csproj.GenerateResource.Cache

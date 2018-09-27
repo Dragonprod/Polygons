@@ -15,13 +15,12 @@ namespace Polygons
     public partial class Form1 : Form
     {
         Color col, pen;
-        List<Shape> figures;
+        List<Shape> figures = new List<Shape>();
         Circle c;
         int _x, _y;
         public Form1()
         {
             InitializeComponent();
-            figures = new List<Shape>();
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint, true);
         }
         private void Form1_MouseDown(object sender, MouseEventArgs e)
