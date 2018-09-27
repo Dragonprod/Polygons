@@ -25,6 +25,7 @@ namespace Polygons
         }
         private void Form1_MouseDown(object sender, MouseEventArgs e)
         {
+            bool IsMove = false;
             _x = e.X; _y = e.Y;
             if (e.Button == MouseButtons.Middle)
             {
