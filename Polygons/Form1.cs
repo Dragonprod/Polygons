@@ -27,7 +27,7 @@ namespace Polygons
         {
             bool IsMove = false;
             _x = e.X; _y = e.Y;
-            if (e.Button == MouseButtons.Middle)
+            if (e.Button == MouseButtons.Left)
             {
                 if (circleToolStripMenuItem.Checked == true)
                 {
