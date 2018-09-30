@@ -26,7 +26,7 @@ namespace Polygons
         {
             bool IsMove = false;
             _x = e.X; _y = e.Y;
-            foreach(Shape p in figures)
+            foreach (Shape p in figures.ToArray())
             {
                 if(p.IsInside(e.X, e.Y))
                 {
