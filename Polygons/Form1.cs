@@ -46,12 +46,12 @@ namespace Polygons
                     figures.Add(new Circle(col, pen, e.X, e.Y));
                     Refresh();
                 }
-                if (triangleToolStripMenuItem1.Checked == true)
+                else if (triangleToolStripMenuItem1.Checked == true)
                 {
                     figures.Add(new Triangle(col, pen, e.X, e.Y));
                     Refresh();
                 }
-                if (squareToolStripMenuItem1.Checked == true)
+                else if(squareToolStripMenuItem1.Checked == true)
                 {
                     figures.Add(new Rectangl(col, pen, e.X, e.Y));
                     Refresh();
@@ -62,6 +62,21 @@ namespace Polygons
         {
             col = Color.Red;
             pen = Color.Green;
+            //if (circleToolStripMenuItem.Checked == true)
+            //{
+            //    figures.Add(new Circle(col, pen, ClientSize.Width / 2, ClientSize.Height / 2));
+            //    Refresh();
+            //}
+            //else if (triangleToolStripMenuItem1.Checked == true)
+            //{
+            //    figures.Add(new Triangle(col, pen, ClientSize.Width / 2, ClientSize.Height / 2));
+            //    Refresh();
+            //}
+            //else if (squareToolStripMenuItem1.Checked == true)
+            //{
+            //    figures.Add(new Rectangl(col, pen, ClientSize.Width / 2, ClientSize.Height / 2));
+            //    Refresh();
+            //}
             figures.Add(new Circle(col, pen, ClientSize.Width / 2, ClientSize.Height / 2));
             Refresh();
         }
