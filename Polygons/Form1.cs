@@ -117,6 +117,12 @@ namespace Polygons
             triangleToolStripMenuItem1.Checked = false;
             circleToolStripMenuItem.Checked = false;
         }
+
+        private void newToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Application.Restart();
+        }
+
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
             foreach (Shape p1 in figures)
