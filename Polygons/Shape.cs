@@ -43,6 +43,16 @@ namespace Polygons
             get { return radius; }
             set { radius = value; }
         }
+        public Color COL
+        {
+            get { return col; }
+            set { col = value; }
+        }
+        public Color PEN
+        {
+            get { return pen; }
+            set { pen = value; }
+        }
         public Shape(Color col, Color pen, int x, int y)
         {
             radius = 20;

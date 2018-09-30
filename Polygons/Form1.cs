@@ -16,7 +16,6 @@ namespace Polygons
     {
         Color col, pen;
         List<Shape> figures = new List<Shape>();
-        Circle c;
         int _x, _y;
         public Form1()
         {
@@ -27,27 +26,27 @@ namespace Polygons
         {
             bool IsMove = false;
             _x = e.X; _y = e.Y;
-            if (e.Button == MouseButtons.Left)
-            {
-                if (circleToolStripMenuItem.Checked == true)
-                {
-                    figures.Add(new Circle(col, pen, e.X, e.Y));
-                    Refresh();
-                }
-                else if (triangleToolStripMenuItem1.Checked == true)
-                {
-                    figures.Add(new Triangle(col, pen, e.X, e.Y));
-                    Refresh();
-                }
-                else if (squareToolStripMenuItem1.Checked == true)
-                {
-                    figures.Add(new Rectangl(col, pen, e.X, e.Y));
-                    Refresh();
-                }
-            }
             foreach (Shape p1 in figures.ToArray())
             {
-                if (e.Button == MouseButtons.Left)
+                if (!IsMove && e.Button == MouseButtons.Left)
+                {
+                    if (circleToolStripMenuItem.Checked == true)
+                    {
+                        figures.Add(new Circle(col, pen, e.X, e.Y));
+                        Refresh();
+                    }
+                    if (triangleToolStripMenuItem1.Checked == true)
+                    {
+                        figures.Add(new Triangle(col, pen, e.X, e.Y));
+                        Refresh();
+                    }
+                    if (squareToolStripMenuItem1.Checked == true)
+                    {
+                        figures.Add(new Rectangl(col, pen, e.X, e.Y));
+                        Refresh();
+                    }
+                }
+                if (IsMove && e.Button == MouseButtons.Left)
                 {
                     if (p1.IsInside(e.X, e.Y)) { p1.FLAG = true; }
                 }
@@ -60,20 +59,20 @@ namespace Polygons
         }
         private void Form1_Load(object sender, EventArgs e)
         {
-            circleToolStripMenuItem.Checked = false;
-            triangleToolStripMenuItem.Checked = false;
-            squareToolStripMenuItem1.Checked = false;
+            col = Color.Red;
+            pen = Color.Green;
+            figures.Add(new Circle(col, pen, ClientSize.Width / 2, ClientSize.Height / 2));
+            Refresh();
         }
         private void Form1_MouseMove(object sender, MouseEventArgs e)
         {
-            if (e.Button != MouseButtons.None) Refresh();
-
-            foreach (Shape p1 in figures.ToArray())
+            foreach (Shape p1 in figures)
             {
                 if (p1.FLAG)
                 {
                     p1.X += e.X - _x;
                     p1.Y += e.Y - _y;
+                    Refresh();
                 } 
             }
             _x = e.X;
@@ -81,19 +80,34 @@ namespace Polygons
         }
         private void Form1_MouseUp(object sender, MouseEventArgs e)
         {
-            foreach(Shape p1 in figures.ToArray())
+            foreach (Shape p1 in figures)
             {
                 p1.FLAG = false;
                 p1.REMOVE = false;
             }
         }
+
+        private void circleToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            triangleToolStripMenuItem1.Checked = false;
+            squareToolStripMenuItem1.Checked = false;
+        }
+
+        private void triangleToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            circleToolStripMenuItem.Checked = false;
+            squareToolStripMenuItem1.Checked = false;
+        }
+
+        private void squareToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            triangleToolStripMenuItem1.Checked = false;
+            circleToolStripMenuItem.Checked = false;
+        }
+
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
-            col = Color.Red;
-            pen = Color.Green;
-            c = new Circle(col, pen, ClientSize.Width / 2 - 10, ClientSize.Height / 2 - 10);
-            c.Draw(e.Graphics);
-            foreach (Shape p1 in figures.ToArray())
+            foreach (Shape p1 in figures)
             {
                 p1.Draw(e.Graphics);
             }

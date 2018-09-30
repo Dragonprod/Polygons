@@ -14,19 +14,17 @@ namespace Polygons
 {
     class Triangle : Shape
     {
+        PointF[] p = new PointF[3];
         public Triangle(Color col, Color pen, int x, int y) : base(col, pen, x, y)
         {
             
         }
         public override void Draw(Graphics gr)
         {
-            //PointF[] p = 
-            //{
-            //    new PointF((float)(x - Math.Sqrt(3) / 2 * radius), y + radius / 2),
-            //    new PointF(x, y - radius),
-            //    new PointF((float)(x + Math.Sqrt(3) / 2 * radius), y + radius / 2)
-            //};
-            gr.FillPolygon(new SolidBrush(col), new PointF[] { new PointF((float)(x - Math.Sqrt(3) / 2 * radius), y + radius / 2), new PointF(x, y - radius), new PointF((float)(x + Math.Sqrt(3) / 2 * radius), y + radius / 2) });
+            p[0] = new PointF((float)(x - Math.Sqrt(3) / 2 * radius), y + radius / 2);
+            p[1] = new PointF(x, y - radius);
+            p[2] = new PointF((float)(x + Math.Sqrt(3) / 2 * radius), y + radius / 2);
+            gr.FillPolygon(new SolidBrush(col), p);
         }
         double Get_Dist(float X1, float Y1, float X2, float Y2)
         {
