@@ -26,34 +26,35 @@ namespace Polygons
         {
             bool IsMove = false;
             _x = e.X; _y = e.Y;
-            foreach (Shape p1 in figures.ToArray())
+            foreach(Shape p in figures)
             {
-                if (!IsMove && e.Button == MouseButtons.Left)
+                if(p.IsInside(e.X, e.Y))
                 {
-                    if (circleToolStripMenuItem.Checked == true)
-                    {
-                        figures.Add(new Circle(col, pen, e.X, e.Y));
-                        Refresh();
-                    }
-                    if (triangleToolStripMenuItem1.Checked == true)
-                    {
-                        figures.Add(new Triangle(col, pen, e.X, e.Y));
-                        Refresh();
-                    }
-                    if (squareToolStripMenuItem1.Checked == true)
-                    {
-                        figures.Add(new Rectangl(col, pen, e.X, e.Y));
-                        Refresh();
-                    }
+                    p.FLAG = true;
+                    IsMove = true;
                 }
-                if (IsMove && e.Button == MouseButtons.Left)
+                if(e.Button == MouseButtons.Right)
                 {
-                    if (p1.IsInside(e.X, e.Y)) { p1.FLAG = true; }
+                    if (p.ToRemove(e.X, e.Y)) p.REMOVE = true;
+                    if (p.REMOVE) { figures.Remove(p); Refresh(); }
                 }
-                if (e.Button == MouseButtons.Right)
+            }
+            if (!IsMove && e.Button == MouseButtons.Left)
+            {
+                if (circleToolStripMenuItem.Checked == true)
                 {
-                    if (p1.ToRemove(e.X, e.Y)) p1.REMOVE = true;
-                    if (p1.REMOVE) { figures.Remove(p1); Refresh(); }
+                    figures.Add(new Circle(col, pen, e.X, e.Y));
+                    Refresh();
+                }
+                if (triangleToolStripMenuItem1.Checked == true)
+                {
+                    figures.Add(new Triangle(col, pen, e.X, e.Y));
+                    Refresh();
+                }
+                if (squareToolStripMenuItem1.Checked == true)
+                {
+                    figures.Add(new Rectangl(col, pen, e.X, e.Y));
+                    Refresh();
                 }
             }
         }
@@ -86,25 +87,21 @@ namespace Polygons
                 p1.REMOVE = false;
             }
         }
-
         private void circleToolStripMenuItem_Click(object sender, EventArgs e)
         {
             triangleToolStripMenuItem1.Checked = false;
             squareToolStripMenuItem1.Checked = false;
         }
-
         private void triangleToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             circleToolStripMenuItem.Checked = false;
             squareToolStripMenuItem1.Checked = false;
         }
-
         private void squareToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             triangleToolStripMenuItem1.Checked = false;
             circleToolStripMenuItem.Checked = false;
         }
-
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
             foreach (Shape p1 in figures)
