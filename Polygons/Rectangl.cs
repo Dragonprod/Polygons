@@ -22,6 +22,7 @@ namespace Polygons
         {
             Rectangle r = new Rectangle((int)(x - radius / Math.Sqrt(2)), (int)(y - radius / Math.Sqrt(2)), (int)(2 * radius / Math.Sqrt(2)), (int)(2 * radius / Math.Sqrt(2)));
             gr.FillRectangle(new SolidBrush(col), r);
+            gr.DrawRectangle(new Pen(col,3), r);
         }
         public override bool IsInside(int mouse_x, int mouse_y)
         {

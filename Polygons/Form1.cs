@@ -123,6 +123,30 @@ namespace Polygons
             Application.Restart();
         }
 
+        private void colorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Form2 color_diag = new Form2();
+            color_diag.Owner = this;
+            color_diag.ShowDialog();
+            if(DialogResult.OK == color_diag.DialogResult)
+            {
+                foreach(Shape p1 in figures)
+                {
+                    p1.COL = Color.FromName(color_diag.SET_COLOR_INSIDE());
+                    p1.PEN = Color.FromName(color_diag.SET_COLOR_OUTSIDE());
+                    Refresh();
+                }
+            }
+        }
+
+        private void radiusToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("В разработке");
+            //Form3 set_rad = new Form3();
+            //set_rad.Owner = this;
+            //set_rad.Show();
+        }
+
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
             foreach (Shape p1 in figures)

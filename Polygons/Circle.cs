@@ -21,6 +21,7 @@ namespace Polygons
         public override void Draw(Graphics gr)
         {
             gr.FillEllipse(new SolidBrush(col), x - radius, y - radius, 2 * radius, 2* radius);
+            gr.DrawEllipse(new Pen(pen,3), x - radius, y - radius, 2 * radius, 2 * radius);
         }
         public override bool IsInside(int mouse_x, int mouse_y)
         {
