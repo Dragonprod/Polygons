@@ -40,7 +40,11 @@
             this.squareToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.colorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.insideToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.outsideToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.radiusToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.colorDialog1 = new System.Windows.Forms.ColorDialog();
+            this.colorDialog2 = new System.Windows.Forms.ColorDialog();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -130,10 +134,26 @@
             // 
             // colorToolStripMenuItem
             // 
+            this.colorToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.insideToolStripMenuItem,
+            this.outsideToolStripMenuItem});
             this.colorToolStripMenuItem.Name = "colorToolStripMenuItem";
             this.colorToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.colorToolStripMenuItem.Text = "Color";
-            this.colorToolStripMenuItem.Click += new System.EventHandler(this.colorToolStripMenuItem_Click);
+            // 
+            // insideToolStripMenuItem
+            // 
+            this.insideToolStripMenuItem.Name = "insideToolStripMenuItem";
+            this.insideToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.insideToolStripMenuItem.Text = "Inside";
+            this.insideToolStripMenuItem.Click += new System.EventHandler(this.insideToolStripMenuItem_Click);
+            // 
+            // outsideToolStripMenuItem
+            // 
+            this.outsideToolStripMenuItem.Name = "outsideToolStripMenuItem";
+            this.outsideToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.outsideToolStripMenuItem.Text = "Outside";
+            this.outsideToolStripMenuItem.Click += new System.EventHandler(this.outsideToolStripMenuItem_Click);
             // 
             // radiusToolStripMenuItem
             // 
@@ -179,6 +199,10 @@
         private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem colorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem radiusToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem insideToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem outsideToolStripMenuItem;
+        private System.Windows.Forms.ColorDialog colorDialog1;
+        private System.Windows.Forms.ColorDialog colorDialog2;
     }
 }
 
