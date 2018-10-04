@@ -14,27 +14,21 @@ namespace Polygons
 {
     class Rectangl : Shape
     {
-        public Rectangl(Color col, Color pen, int x, int y) :base(col, pen, x, y)
+        public Rectangl(int x, int y) : base(x, y)
         {
-            
+
         }
         public override void Draw(Graphics gr)
         {
-            Rectangle r = new Rectangle((int)(x - radius / Math.Sqrt(2)), (int)(y - radius / Math.Sqrt(2)), (int)(2 * radius / Math.Sqrt(2)), (int)(2 * radius / Math.Sqrt(2)));
-            gr.FillRectangle(new SolidBrush(col), r);
-            gr.DrawRectangle(new Pen(pen,3), r);
+            gr.FillRectangle(new SolidBrush(col), (float)(x - radius / Math.Sqrt(2)), (float)(y - radius / Math.Sqrt(2)), (float)(2 * radius / Math.Sqrt(2)), (float)(2 * radius / Math.Sqrt(2)));
+            gr.DrawRectangle(new Pen(pen, 3), (float)(x - radius / Math.Sqrt(2)), (float)(y - radius / Math.Sqrt(2)), (float)(2 * radius / Math.Sqrt(2)), (float)(2 * radius / Math.Sqrt(2)));
         }
         public override bool IsInside(int mouse_x, int mouse_y)
         {
-            if (mouse_x >= x && mouse_x <= x + 2 * (radius / Math.Sqrt(2)) && mouse_y >= y && mouse_y <= y + 2 * (radius / Math.Sqrt(2)))
+            if (mouse_x >= x - radius && mouse_x <= x + 2 * (radius / Math.Sqrt(2)) && mouse_y >= y - radius && mouse_y <= y + 2 * (radius / Math.Sqrt(2)))
                 return true;
             else return false;
         }
-        public override bool ToRemove(int mouse_x, int mouse_y)
-        {
-            if (mouse_x >= x && mouse_x <= x + 2 * (radius / Math.Sqrt(2)) && mouse_y >= y && mouse_y <= y + 2 * (radius / Math.Sqrt(2)))
-                return true;
-            else return false;
-        }
+
     }
 }

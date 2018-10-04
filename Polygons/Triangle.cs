@@ -15,9 +15,9 @@ namespace Polygons
     class Triangle : Shape
     {
         PointF[] p = new PointF[3];
-        public Triangle(Color col, Color pen, int x, int y) : base(col, pen, x, y)
+        public Triangle(int x, int y) : base(x, y)
         {
-            
+
         }
         public override void Draw(Graphics gr)
         {
@@ -42,11 +42,6 @@ namespace Polygons
                 return true;
             else return false;
         }
-        public override bool ToRemove(int mouse_x, int mouse_y)
-        {
-            if (1 + 3 * Math.Sqrt(3) * radius * radius / 4 >= Geron((float)(x - Math.Sqrt(3) / 2 * radius), (y + radius / 2), x, (y - radius), mouse_x, mouse_y) + Geron((float)(x - Math.Sqrt(3) / 2 * radius), (y + radius / 2), (float)(x + Math.Sqrt(3) / 2 * radius), (y + radius / 2), mouse_x, mouse_y) + Geron(x, (y - radius), (float)(x + Math.Sqrt(3) / 2 * radius), (y + radius / 2), mouse_x, mouse_y))
-                return true;
-            else return false;
-        }
+
     }
 }
