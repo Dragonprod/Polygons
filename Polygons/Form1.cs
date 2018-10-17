@@ -16,6 +16,7 @@ namespace Polygons
     {
         List<Shape> figures = new List<Shape>();
         int _x, _y;
+        Random rnd = new Random();
         public Form1()
         {
             InitializeComponent();
@@ -195,8 +196,8 @@ namespace Polygons
         {
             foreach(Shape p in figures)
             {
-                p.X = p.X + 1;
-                p.Y = p.Y + 1;
+                p.X = p.X + rnd.Next(-1,2);
+                p.Y = p.Y + rnd.Next(-1,2);
                 Refresh();
             }
         }
