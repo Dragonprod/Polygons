@@ -168,7 +168,6 @@ namespace Polygons
         //    while (vEndpoint != hull[0]);
         //    return hull;
         //}
-
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
             foreach (Shape p1 in figures)
@@ -181,7 +180,26 @@ namespace Polygons
             }
         }
 
-       
+        private void button1_Click(object sender, EventArgs e)
+        {
+            timer1.Interval = 1;
+            timer1.Enabled = true;
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            timer1.Enabled = false;
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            foreach(Shape p in figures)
+            {
+                p.X = p.X + 1;
+                p.Y = p.Y + 1;
+                Refresh();
+            }
+        }
 
         private void Form1_Resize(object sender, EventArgs e)
         {
