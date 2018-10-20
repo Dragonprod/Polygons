@@ -44,11 +44,14 @@
             this.insideToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.outsideToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.radiusToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.alToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             this.colorDialog2 = new System.Windows.Forms.ColorDialog();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
+            this.byDefenitionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.byJarvisToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -57,7 +60,8 @@
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.shapeToolStripMenuItem,
-            this.optionsToolStripMenuItem});
+            this.optionsToolStripMenuItem,
+            this.alToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(645, 24);
@@ -109,7 +113,7 @@
             this.circleToolStripMenuItem.CheckOnClick = true;
             this.circleToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.circleToolStripMenuItem.Name = "circleToolStripMenuItem";
-            this.circleToolStripMenuItem.Size = new System.Drawing.Size(116, 22);
+            this.circleToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.circleToolStripMenuItem.Text = "Circle";
             this.circleToolStripMenuItem.Click += new System.EventHandler(this.circleToolStripMenuItem_Click);
             // 
@@ -117,7 +121,7 @@
             // 
             this.triangleToolStripMenuItem1.CheckOnClick = true;
             this.triangleToolStripMenuItem1.Name = "triangleToolStripMenuItem1";
-            this.triangleToolStripMenuItem1.Size = new System.Drawing.Size(116, 22);
+            this.triangleToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.triangleToolStripMenuItem1.Text = "Triangle";
             this.triangleToolStripMenuItem1.Click += new System.EventHandler(this.triangleToolStripMenuItem1_Click);
             // 
@@ -125,7 +129,7 @@
             // 
             this.squareToolStripMenuItem1.CheckOnClick = true;
             this.squareToolStripMenuItem1.Name = "squareToolStripMenuItem1";
-            this.squareToolStripMenuItem1.Size = new System.Drawing.Size(116, 22);
+            this.squareToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.squareToolStripMenuItem1.Text = "Square";
             this.squareToolStripMenuItem1.Click += new System.EventHandler(this.squareToolStripMenuItem1_Click);
             // 
@@ -144,7 +148,7 @@
             this.insideToolStripMenuItem,
             this.outsideToolStripMenuItem});
             this.colorToolStripMenuItem.Name = "colorToolStripMenuItem";
-            this.colorToolStripMenuItem.Size = new System.Drawing.Size(109, 22);
+            this.colorToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.colorToolStripMenuItem.Text = "Color";
             // 
             // insideToolStripMenuItem
@@ -164,9 +168,18 @@
             // radiusToolStripMenuItem
             // 
             this.radiusToolStripMenuItem.Name = "radiusToolStripMenuItem";
-            this.radiusToolStripMenuItem.Size = new System.Drawing.Size(109, 22);
+            this.radiusToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.radiusToolStripMenuItem.Text = "Radius";
             this.radiusToolStripMenuItem.Click += new System.EventHandler(this.radiusToolStripMenuItem_Click);
+            // 
+            // alToolStripMenuItem
+            // 
+            this.alToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.byDefenitionToolStripMenuItem,
+            this.byJarvisToolStripMenuItem});
+            this.alToolStripMenuItem.Name = "alToolStripMenuItem";
+            this.alToolStripMenuItem.Size = new System.Drawing.Size(73, 20);
+            this.alToolStripMenuItem.Text = "Algorithm";
             // 
             // timer1
             // 
@@ -193,6 +206,22 @@
             this.button2.Text = "Stop";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // byDefenitionToolStripMenuItem
+            // 
+            this.byDefenitionToolStripMenuItem.CheckOnClick = true;
+            this.byDefenitionToolStripMenuItem.Name = "byDefenitionToolStripMenuItem";
+            this.byDefenitionToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.byDefenitionToolStripMenuItem.Text = "By Defenition";
+            this.byDefenitionToolStripMenuItem.Click += new System.EventHandler(this.byDefenitionToolStripMenuItem_Click);
+            // 
+            // byJarvisToolStripMenuItem
+            // 
+            this.byJarvisToolStripMenuItem.CheckOnClick = true;
+            this.byJarvisToolStripMenuItem.Name = "byJarvisToolStripMenuItem";
+            this.byJarvisToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.byJarvisToolStripMenuItem.Text = "By Jarvis";
+            this.byJarvisToolStripMenuItem.Click += new System.EventHandler(this.byJarvisToolStripMenuItem_Click);
             // 
             // Form1
             // 
@@ -240,6 +269,9 @@
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.ToolStripMenuItem alToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem byDefenitionToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem byJarvisToolStripMenuItem;
     }
 }
 

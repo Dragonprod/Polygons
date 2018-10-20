@@ -17,7 +17,7 @@ namespace Polygons
         protected static Color col, pen;
         protected static int radius;
         protected int x, y;
-        protected bool flag, remove;
+        protected bool flag, remove, ToRemove;
         public int X
         {
             get { return x; }
@@ -37,6 +37,11 @@ namespace Polygons
         {
             get { return remove; }
             set { remove = value; }
+        }
+        public bool TOREMOVE
+        {
+            get { return ToRemove; }
+            set { ToRemove = value; }
         }
         public int RADIUS
         {

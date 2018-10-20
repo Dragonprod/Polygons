@@ -16,6 +16,7 @@ namespace Polygons
     {
         List<Shape> figures = new List<Shape>();
         int _x, _y;
+        float k, b;
         Random rnd = new Random();
         public Form1()
         {
@@ -92,6 +93,13 @@ namespace Polygons
                 p1.FLAG = false;
                 p1.REMOVE = false;
             }
+            //foreach(Shape p1 in figures)
+            //{
+            //    if (p1.TOREMOVE == false)
+            //    {
+            //        figures.Remove(p1);
+            //    }
+            //}
         }
         private void circleToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -140,45 +148,89 @@ namespace Polygons
                 Refresh();
             }
         }
-        //static int Orientation(Shape p1, Shape p2, Shape p)
-        //{
-        //    if (((p2.X - p1.X) * (p.Y - p1.Y) - (p.X - p1.X) * (p2.Y - p1.Y)) > 0)
-        //        return -1;
-        //    if (((p2.X - p1.X) * (p.Y - p1.Y) - (p.X - p1.X) * (p2.Y - p1.Y)) < 0)
-        //        return 1;
-        //    return 0;
-        //}
-        //List<Shape> ConvexHull(List<Shape> figures)
-        //{
-        //    List<Shape> hull = new List<Shape>();
-        //    Shape vPointOnHull = figures.Where(p => p.X == figures.Min(min => min.X)).First();
-        //    Shape vEndpoint;
-        //    do
-        //    {
-        //        hull.Add(vPointOnHull);
-        //        vEndpoint = figures[0];
-        //        for (int i = 1; i < figures.Count; i++)
-        //        {
-        //            if ((vPointOnHull == vEndpoint) || (Orientation(vPointOnHull, vEndpoint, figures[i]) == -1))
-        //            {
-        //                vEndpoint = figures[i];
-        //            }
-        //        }
-        //        vPointOnHull = vEndpoint;
-        //    }
-        //    while (vEndpoint != hull[0]);
-        //    return hull;
-        //}
+        bool IsLeftOf(Shape a, Shape b, Shape p)
+        {
+            if ((b.X- a.X) * (p.Y - a.Y) > (p.X - a.X * (b.Y - a.Y))) return true;
+            return false;
+        }
+        List<Shape> ConvexHull_Main (List<Shape> figures)
+        {
+            if (figures.Count < 3)
+                return null;
+            var convexHull = new List<Shape>();
+            var pointOnHull = figures.Aggregate((leftmost, current) => leftmost.X < current.X ? leftmost : current);
+            do
+            {
+                convexHull.Add(pointOnHull);
+                pointOnHull = figures.Aggregate((potentialNextPointOnHull, current) =>
+                {
+                    if (potentialNextPointOnHull == pointOnHull || IsLeftOf(pointOnHull, potentialNextPointOnHull, current))
+                        return current;
+                    return potentialNextPointOnHull;
+                });
+            } while (pointOnHull != convexHull[0]);
+            return convexHull;
+        }
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
             foreach (Shape p1 in figures)
             {
                 p1.Draw(e.Graphics);
-                if (figures.Count > 3)
+            }
+            #region ConvexHull_ByDefenition
+            if (byDefenitionToolStripMenuItem.Checked)
+            {
+                int down = 0, up = 0;
+                foreach (Shape p in figures)
                 {
-                    
+                    p.TOREMOVE = false;
+                }
+                for (int i = 0; i < figures.Count; i++)
+                {
+                    for (int j = i + 1; j < figures.Count; j++)
+                    {
+                        //k = (figures[i+1].Y - figures[i].Y) / (figures[i+1].X - figures[i].X);
+                        k = figures[i].Y / figures[i].X;
+                        b = figures[i + 1].Y - k * figures[i + 1].X;
+                        //b = figures[i + 1].Y - ((figures[i + 1].Y - figures[i].Y) / (figures[i + 1].X - figures[i].X)) * figures[i + 1].X;
+                        for (int z = 0; z < figures.Count; z++)
+                        {
+                            if (figures[z] != figures[i] && figures[z] != figures[i + 1])
+                            {
+                                if (figures[z].X * k < figures[z].Y)
+                                {
+                                    down++;
+                                }
+                                if (figures[z].X * k > figures[z].Y)
+                                {
+                                    up++;
+                                }
+                                if (up == 0 || down == 0)
+                                {
+                                    figures[i].TOREMOVE = true;
+                                    figures[i + 1].TOREMOVE = false;
+                                    e.Graphics.DrawLine(new Pen(Color.Black), figures[i].X, figures[i].Y, figures[i + 1].X, figures[i + 1].Y);
+                                }
+                            }
+                        }
+                    }
                 }
             }
+            #endregion
+            #region ConvexHull_ByJarvis
+            if (byJarvisToolStripMenuItem.Checked)
+            {
+                if (figures.Count > 4)
+                    figures = ConvexHull_Main(figures);
+                for (int i = 0; i < figures.Count; i++)
+                {
+                    for (int j = i + 1; j < figures.Count; j++)
+                    {
+                        e.Graphics.DrawLine(new Pen(Color.Black), figures[i].X, figures[i].Y, figures[j].X, figures[j].Y);
+                    }
+                }
+            }
+            #endregion
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -192,12 +244,22 @@ namespace Polygons
             timer1.Enabled = false;
         }
 
+        private void byDefenitionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            byJarvisToolStripMenuItem.Checked = false;
+        }
+
+        private void byJarvisToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            byDefenitionToolStripMenuItem.Checked = false;
+        }
+
         private void timer1_Tick(object sender, EventArgs e)
         {
-            foreach(Shape p in figures)
+            foreach (Shape p in figures)
             {
-                p.X = p.X + rnd.Next(-1,2);
-                p.Y = p.Y + rnd.Next(-1,2);
+                p.X = p.X + rnd.Next(-1, 2);
+                p.Y = p.Y + rnd.Next(-1, 2);
                 Refresh();
             }
         }
