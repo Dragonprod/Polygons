@@ -93,15 +93,15 @@ namespace Polygons
                 p1.FLAG = false;
                 p1.REMOVE = false;
             }
-            foreach (Shape p1 in figures.ToArray())
-            {
-                if(figures.Count>=4)
-                if (p1.TOREMOVE == false)
-                {
-                    figures.Remove(p1);
-                    Refresh();
-                }
-            }
+            //foreach (Shape p1 in figures.ToArray())
+            //{
+            //    if(figures.Count>=4)
+            //    if (p1.TOREMOVE == false)
+            //    {
+            //        figures.Remove(p1);
+            //        Refresh();
+            //    }
+            //}
         }
         private void circleToolStripMenuItem_Click(object sender, EventArgs e)
         {
