@@ -93,13 +93,15 @@ namespace Polygons
                 p1.FLAG = false;
                 p1.REMOVE = false;
             }
-            //foreach(Shape p1 in figures)
-            //{
-            //    if (p1.TOREMOVE == false)
-            //    {
-            //        figures.Remove(p1);
-            //    }
-            //}
+            foreach (Shape p1 in figures.ToArray())
+            {
+                if(figures.Count>=4)
+                if (p1.TOREMOVE == false)
+                {
+                    figures.Remove(p1);
+                    Refresh();
+                }
+            }
         }
         private void circleToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -180,36 +182,35 @@ namespace Polygons
             #region ConvexHull_ByDefenition
             if (byDefenitionToolStripMenuItem.Checked)
             {
-                int down = 0, up = 0;
-                foreach (Shape p in figures)
+                if (figures.Count >= 3)
                 {
-                    p.TOREMOVE = false;
-                }
-                for (int i = 0; i < figures.Count; i++)
-                {
-                    for (int j = i + 1; j < figures.Count; j++)
+                    int down = 0, up = 0;
+                    for (int i = 0; i < figures.Count; i++)
                     {
-                        //k = (figures[i+1].Y - figures[i].Y) / (figures[i+1].X - figures[i].X);
-                        k = figures[i].Y / figures[i].X;
-                        b = figures[i + 1].Y - k * figures[i + 1].X;
-                        //b = figures[i + 1].Y - ((figures[i + 1].Y - figures[i].Y) / (figures[i + 1].X - figures[i].X)) * figures[i + 1].X;
-                        for (int z = 0; z < figures.Count; z++)
+                        for (int j = i + 1; j < figures.Count; j++)
                         {
-                            if (figures[z] != figures[i] && figures[z] != figures[i + 1])
+                            k = ((float)figures[i + 1].Y - figures[i].Y) / (figures[i + 1].X - figures[i].X);
+                            //k = figures[i].Y / figures[i].X;
+                            b = figures[i + 1].Y - k * figures[i + 1].X;
+                            //b = figures[i + 1].Y - ((figures[i + 1].Y - figures[i].Y) / (figures[i + 1].X - figures[i].X)) * figures[i + 1].X;
+                            for (int z = 0; z < figures.Count; z++)
                             {
-                                if (figures[z].X * k < figures[z].Y)
+                                if (figures[z] != figures[i] && figures[z] != figures[i + 1])
                                 {
-                                    down++;
-                                }
-                                if (figures[z].X * k > figures[z].Y)
-                                {
-                                    up++;
-                                }
-                                if (up == 0 || down == 0)
-                                {
-                                    figures[i].TOREMOVE = true;
-                                    figures[i + 1].TOREMOVE = false;
-                                    e.Graphics.DrawLine(new Pen(Color.Black), figures[i].X, figures[i].Y, figures[i + 1].X, figures[i + 1].Y);
+                                    if (figures[z].X * k < figures[z].Y)
+                                    {
+                                        down++;
+                                    }
+                                    if (figures[z].X * k > figures[z].Y)
+                                    {
+                                        up++;
+                                    }
+                                    if (up == 0 || down == 0)
+                                    {
+                                        figures[i].TOREMOVE = true;
+                                        figures[i + 1].TOREMOVE = false;
+                                        e.Graphics.DrawLine(new Pen(Color.Black), figures[i].X, figures[i].Y, figures[i + 1].X, figures[i + 1].Y);
+                                    }
                                 }
                             }
                         }
@@ -220,14 +221,11 @@ namespace Polygons
             #region ConvexHull_ByJarvis
             if (byJarvisToolStripMenuItem.Checked)
             {
-                if (figures.Count > 4)
-                    figures = ConvexHull_Main(figures);
-                for (int i = 0; i < figures.Count; i++)
+                if (figures.Count >= 3)
                 {
-                    for (int j = i + 1; j < figures.Count; j++)
-                    {
-                        e.Graphics.DrawLine(new Pen(Color.Black), figures[i].X, figures[i].Y, figures[j].X, figures[j].Y);
-                    }
+                    List<Shape> figures1 = ConvexHull_Main(figures);
+                    for (int i = 0; i < figures1.Count; i++)
+                        e.Graphics.DrawLine(new Pen(Color.Black), figures1[i].X, figures1[i].Y, figures1[i + 1].X, figures1[i + 1].Y);
                 }
             }
             #endregion
