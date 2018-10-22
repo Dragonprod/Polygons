@@ -95,14 +95,16 @@ namespace Polygons
             }
             //foreach (Shape p1 in figures.ToArray())
             //{
-            //    if(figures.Count>=4)
-            //    if (p1.TOREMOVE == false)
-            //    {
-            //        figures.Remove(p1);
-            //        Refresh();
-            //    }
+
+            //        if (p1.TOREMOVE == true)
+            //        {
+            //            figures.Remove(p1);
+            //            Refresh();
+            //        }
             //}
+            Refresh();
         }
+
         private void circleToolStripMenuItem_Click(object sender, EventArgs e)
         {
             triangleToolStripMenuItem1.Checked = false;
@@ -149,28 +151,44 @@ namespace Polygons
                 Refresh();
             }
         }
-        bool IsLeftOf(Shape a, Shape b, Shape p)
+        //bool IsLeftOf(Shape a, Shape b, Shape p)
+        //{
+        //    if ((b.X- a.X) * (p.Y - a.Y) > (p.X - a.X * (b.Y - a.Y))) return true;
+        //    return false;
+        //}
+        int Orientation(Shape p1, Shape p2, Shape p)
         {
-            if ((b.X- a.X) * (p.Y - a.Y) > (p.X - a.X * (b.Y - a.Y))) return true;
-            return false;
+            int Orin = (p2.X - p1.X) * (p.Y - p1.Y) - (p.X - p1.X) * (p2.Y - p1.Y);
+            if (Orin > 0)
+                return -1; 
+            if (Orin < 0)
+                return 1; 
+            return 0; 
         }
         List<Shape> ConvexHull_Main (List<Shape> figures)
         {
             if (figures.Count < 3)
                 return null;
-            var convexHull = new List<Shape>();
-            var pointOnHull = figures.Aggregate((leftmost, current) => leftmost.X < current.X ? leftmost : current);
+            List<Shape> hull = new List<Shape>();
+            Shape vPointOnHull = figures.Where(p => p.X == figures.Min(min => min.X)).First();
+            Shape vEndpoint;
             do
             {
-                convexHull.Add(pointOnHull);
-                pointOnHull = figures.Aggregate((potentialNextPointOnHull, current) =>
+                hull.Add(vPointOnHull);
+                vEndpoint = figures[0];
+                for (int i = 1; i < figures.Count; i++)
                 {
-                    if (potentialNextPointOnHull == pointOnHull || IsLeftOf(pointOnHull, potentialNextPointOnHull, current))
-                        return current;
-                    return potentialNextPointOnHull;
-                });
-            } while (pointOnHull != convexHull[0]);
-            return convexHull;
+                    if ((vPointOnHull == vEndpoint)
+                        || (Orientation(vPointOnHull, vEndpoint, figures[i]) == -1))
+                    {
+                        vEndpoint = figures[i];
+                    }
+                }
+                vPointOnHull = vEndpoint;
+            }
+            while (vEndpoint != hull[0]);
+
+            return hull;
         }
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
@@ -222,10 +240,14 @@ namespace Polygons
             {
                 if (figures.Count >= 3)
                 {
-                    List<Shape> figures1 = ConvexHull_Main(figures);
-                    for (int i = 0; i < figures1.Count; i++)
-                        e.Graphics.DrawLine(new Pen(Color.Black), figures1[i].X, figures1[i].Y, figures1[i + 1].X, figures1[i + 1].Y);
+                    figures = ConvexHull_Main(figures);
+                    e.Graphics.DrawLine(new Pen(Color.Black), figures[0].X, figures[0].Y, figures[figures.Count - 1].X, figures[figures.Count - 1].Y);
+                    for (int i = 0; i < figures.Count - 1; i++)
+                    {
+                        e.Graphics.DrawLine(new Pen(Color.Black), figures[i].X, figures[i].Y, figures[i + 1].X, figures[i + 1].Y);
+                    }
                 }
+
             }
             #endregion
         }
