@@ -126,7 +126,6 @@ namespace Polygons
 
         private void radiusToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("В разработке");
             //Form2 set_rad = new Form2();
             //set_rad.Owner = this;
             //set_rad.Show();
@@ -250,6 +249,13 @@ namespace Polygons
         private void byJarvisToolStripMenuItem_Click(object sender, EventArgs e)
         {
             byDefenitionToolStripMenuItem.Checked = false;
+        }
+
+        private void testToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            //Bitmap img = new Bitmap();
+
+
         }
 
         private void timer1_Tick(object sender, EventArgs e)

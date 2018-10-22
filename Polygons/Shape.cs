@@ -18,6 +18,11 @@ namespace Polygons
         protected static int radius;
         protected int x, y;
         protected bool flag, remove, ToRemove;
+        public event EventHandler Changed = delegate { };
+        protected virtual void OnChanged()
+        {
+            Changed(this, EventArgs.Empty);
+        }
         public int X
         {
             get { return x; }
