@@ -26,6 +26,7 @@ namespace Polygons
             p[2] = new PointF((float)(x + Math.Sqrt(3) / 2 * radius), y + radius / 2);
             gr.FillPolygon(new SolidBrush(col), p);
             gr.DrawPolygon(new Pen(pen, 3), p);
+            
         }
         double Get_Dist(float X1, float Y1, float X2, float Y2)
         {

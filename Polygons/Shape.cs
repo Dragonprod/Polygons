@@ -12,7 +12,7 @@ using System.IO;
 
 namespace Polygons
 {
-    abstract class Shape
+    public abstract class Shape
     {
         protected static Color col, pen;
         protected static int radius;
@@ -21,7 +21,7 @@ namespace Polygons
         public event EventHandler Changed = delegate { };
         protected virtual void OnChanged()
         {
-            Changed(this, EventArgs.Empty);
+            Changed(this, EventArgs.Empty); 
         }
         public int X
         {
@@ -51,7 +51,7 @@ namespace Polygons
         public int RADIUS
         {
             get { return radius; }
-            set { radius = value; }
+            set { radius = value; OnChanged(); }
         }
         public Color COL
         {

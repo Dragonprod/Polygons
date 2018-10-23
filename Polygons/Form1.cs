@@ -17,6 +17,7 @@ namespace Polygons
         List<Shape> figures = new List<Shape>();
         int _x, _y;
         float k, b;
+        Shape test;
         Random rnd = new Random();
         public Form1()
         {
@@ -101,7 +102,7 @@ namespace Polygons
             //            figures.Remove(p1);
             //            Refresh();
             //        }
-            //}
+            //
             Refresh();
         }
 
@@ -128,9 +129,10 @@ namespace Polygons
 
         private void radiusToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //Form2 set_rad = new Form2();
-            //set_rad.Owner = this;
-            //set_rad.Show();
+            //Form2 set_r = new Form2();
+            //set_r.Owner = this;
+            //set_r.Show();
+            //set_r.Show1(test);
         }
 
         private void insideToolStripMenuItem_Click(object sender, EventArgs e)
@@ -151,11 +153,6 @@ namespace Polygons
                 Refresh();
             }
         }
-        //bool IsLeftOf(Shape a, Shape b, Shape p)
-        //{
-        //    if ((b.X- a.X) * (p.Y - a.Y) > (p.X - a.X * (b.Y - a.Y))) return true;
-        //    return false;
-        //}
         int Orientation(Shape p1, Shape p2, Shape p)
         {
             int Orin = (p2.X - p1.X) * (p.Y - p1.Y) - (p.X - p1.X) * (p2.Y - p1.Y);
@@ -192,6 +189,8 @@ namespace Polygons
         }
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
+            test = new Circle(50, 50);
+            test.Draw(e.Graphics);
             foreach (Shape p1 in figures)
             {
                 p1.Draw(e.Graphics);
