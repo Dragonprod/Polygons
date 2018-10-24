@@ -192,14 +192,13 @@ namespace Polygons
                 vPointOnHull = vEndpoint;
             }
             while (vEndpoint != hull[0]);
-
             return hull;
         }
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
             foreach (Shape p1 in figures)
             {
-                p1.Draw(e.Graphics);
+                p1.Draw(e.Graphics); 
             }
             #region ConvexHull_ByDefenition
             if (byDefenitionToolStripMenuItem.Checked)
