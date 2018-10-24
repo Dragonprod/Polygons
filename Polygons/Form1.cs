@@ -129,9 +129,17 @@ namespace Polygons
 
         private void radiusToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            set_r = new Form2();
-            set_r.Owner = this;
-            set_r.Show();
+            //
+            //re-open lock
+            //
+            if (set_r == null || set_r.IsDisposed)
+            {
+                set_r = new Form2();
+                set_r.Owner = this;
+                set_r.Show();
+            }
+            else set_r.Activate();
+
             set_r.RadiusChanged += Set_r_RadiusChanged;
         }
 
