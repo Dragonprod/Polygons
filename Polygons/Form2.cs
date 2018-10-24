@@ -13,35 +13,32 @@ namespace Polygons
     
     public partial class Form2 : Form
     {
-        Shape shape;
         public Form2()
         {
             InitializeComponent();
+            trackBar1.ValueChanged += trackBar1_ValueChanged;
         }
-
-        public void Show1(Shape shape)
+        public int Radius
         {
-            this.shape = shape;
-            shape.Changed += Shape_Changed;
+            get { return trackBar1.Value; }
+            protected set
+            {
+                if (value == trackBar1.Value)
+                {
+                    return;
+                }
+                trackBar1.Value = value;
+                OnRadiusChanged();
+            }
         }
-
-        private void Shape_Changed(object sender, EventArgs e)
+        public event EventHandler RadiusChanged;
+        protected void OnRadiusChanged()
         {
-            Refresh();
-        }
-
-        private void Form2_Load(object sender, EventArgs e)
-        {
-
-        }
-        protected override void OnClosed(EventArgs e)
-        {
-            base.OnClosed(e);
-            shape.Changed -= Shape_Changed;
+            RadiusChanged?.Invoke(this, EventArgs.Empty);
         }
         private void trackBar1_ValueChanged(object sender, EventArgs e)
         {
-            shape.RADIUS = (sender as TrackBar).Value;
+            OnRadiusChanged();
         }
 
     }
