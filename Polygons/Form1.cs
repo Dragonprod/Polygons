@@ -17,7 +17,7 @@ namespace Polygons
         List<Shape> figures = new List<Shape>();
         int _x, _y;
         float k, b;
-        Shape test;
+        Form2 set_r;
         Random rnd = new Random();
         public Form1()
         {
@@ -129,12 +129,20 @@ namespace Polygons
 
         private void radiusToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //Form2 set_r = new Form2();
-            //set_r.Owner = this;
-            //set_r.Show();
-            //set_r.Show1(test);
+            set_r = new Form2();
+            set_r.Owner = this;
+            set_r.Show();
+            set_r.RadiusChanged += Set_r_RadiusChanged;
         }
 
+        private void Set_r_RadiusChanged(object sender, EventArgs e)
+        {
+            foreach (Shape p in figures)
+            {
+                p.RADIUS = set_r.Radius;
+                Refresh();
+            }
+        }
         private void insideToolStripMenuItem_Click(object sender, EventArgs e)
         {
             colorDialog1.ShowDialog();
@@ -189,8 +197,6 @@ namespace Polygons
         }
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
-            test = new Circle(50, 50);
-            test.Draw(e.Graphics);
             foreach (Shape p1 in figures)
             {
                 p1.Draw(e.Graphics);
@@ -225,6 +231,7 @@ namespace Polygons
                                     {
                                         figures[i].TOREMOVE = true;
                                         figures[i + 1].TOREMOVE = false;
+                                        e.Graphics.DrawLine(new Pen(Color.Black), figures[0].X, figures[0].Y, figures[figures.Count - 1].X, figures[figures.Count - 1].Y);
                                         e.Graphics.DrawLine(new Pen(Color.Black), figures[i].X, figures[i].Y, figures[i + 1].X, figures[i + 1].Y);
                                     }
                                 }
@@ -250,7 +257,6 @@ namespace Polygons
             }
             #endregion
         }
-
         private void button1_Click(object sender, EventArgs e)
         {
             timer1.Interval = 1;
@@ -275,8 +281,6 @@ namespace Polygons
         private void testToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //Bitmap img = new Bitmap();
-
-
         }
 
         private void timer1_Tick(object sender, EventArgs e)

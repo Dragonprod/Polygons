@@ -54,7 +54,6 @@
             this.Name = "Form2";
             this.ShowInTaskbar = false;
             this.Text = "Select Radius";
-            this.Load += new System.EventHandler(this.Form2_Load);
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
