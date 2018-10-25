@@ -60,7 +60,6 @@ namespace Polygons
         }
         public Shape(int x, int y)
         {
-            radius = 20;
             this.x = x;
             this.y = y;
         }
