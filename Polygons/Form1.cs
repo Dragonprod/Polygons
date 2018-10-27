@@ -15,7 +15,7 @@ namespace Polygons
     public partial class Form1 : Form
     {
         List<Shape> figures = new List<Shape>();
-        int _x, _y;
+        int _x, _y, RadMem = 20;
         float k, b;
         Form2 set_r;
         Random rnd = new Random();
@@ -136,10 +136,10 @@ namespace Polygons
             {
                 set_r = new Form2();
                 set_r.Owner = this;
+                set_r.RadMem(RadMem);
                 set_r.Show();
             }
             else set_r.Activate();
-
             set_r.RadiusChanged += Set_r_RadiusChanged;
         }
 
@@ -150,6 +150,7 @@ namespace Polygons
                 p.RADIUS = set_r.Radius;
                 Refresh();
             }
+            RadMem = set_r.Radius;
         }
         private void insideToolStripMenuItem_Click(object sender, EventArgs e)
         {

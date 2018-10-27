@@ -31,6 +31,10 @@ namespace Polygons
                 OnRadiusChanged();
             }
         }
+        public void RadMem(int Rm)
+        {
+            trackBar1.Value = Rm;
+        }
         public event EventHandler RadiusChanged;
         protected void OnRadiusChanged()
         {
