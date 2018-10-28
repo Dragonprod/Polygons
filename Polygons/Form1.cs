@@ -267,8 +267,24 @@ namespace Polygons
         }
         private void button1_Click(object sender, EventArgs e)
         {
-            timer1.Interval = 1;
-            timer1.Enabled = true;
+            try
+            {
+                if (int.Parse(textBox1.Text) <= 0) throw new IndexOutOfRangeException();
+                timer1.Interval = int.Parse(textBox1.Text);
+                timer1.Enabled = true;
+            }
+            catch(FormatException)
+            {
+                textBox1.Text = null; 
+                timer1.Enabled = false;
+                MessageBox.Show("Error: Only numbers\nInterval must be set", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch(IndexOutOfRangeException)
+            {
+                textBox1.Text = null;
+                timer1.Enabled = false;
+                MessageBox.Show("Error: Interval must be > or = 0", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -284,6 +300,27 @@ namespace Polygons
         private void byJarvisToolStripMenuItem_Click(object sender, EventArgs e)
         {
             byDefenitionToolStripMenuItem.Checked = false;
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (int.Parse(textBox1.Text) <= 0) throw new IndexOutOfRangeException();
+                timer1.Interval = int.Parse(textBox1.Text);
+            }
+            catch (FormatException)
+            {
+                textBox1.Text = null;
+                timer1.Enabled = false;
+                MessageBox.Show("Error: Only numbers\nInterval must be set", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (IndexOutOfRangeException)
+            {
+                textBox1.Text = null;
+                timer1.Enabled = false;
+                MessageBox.Show("Error: Interval must be > or = 0", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void testToolStripMenuItem_Click(object sender, EventArgs e)
