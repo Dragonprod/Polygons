@@ -67,6 +67,12 @@ namespace Polygons
                     Refresh();
                 }
             }
+            //pre-load for Jarvis Convex Hull
+            if (figures.Count >= 3)
+            {
+                figures = ConvexHull_Main(figures);
+                Refresh();
+            }
         }
         private void Form1_Load(object sender, EventArgs e)
         {
