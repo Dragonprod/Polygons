@@ -24,6 +24,14 @@ namespace Polygons
             InitializeComponent();
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint, true);
         }
+        void PreLoadForHull() //pre - load for Jarvis Convex Hull
+        {
+            if (figures.Count >= 3)
+            {
+                figures = ConvexHull_Main(figures);
+                Refresh();
+            }
+        }
         private void Form1_MouseDown(object sender, MouseEventArgs e)
         {
             bool IsMove = false;
@@ -67,12 +75,7 @@ namespace Polygons
                     Refresh();
                 }
             }
-            //pre-load for Jarvis Convex Hull
-            if (figures.Count >= 3)
-            {
-                figures = ConvexHull_Main(figures);
-                Refresh();
-            }
+            PreLoadForHull();
         }
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -92,6 +95,7 @@ namespace Polygons
             }
             _x = e.X;
             _y = e.Y;
+            PreLoadForHull();
         }
         private void Form1_MouseUp(object sender, MouseEventArgs e)
         {
@@ -109,7 +113,6 @@ namespace Polygons
             //            Refresh();
             //        }
             //
-            Refresh();
         }
 
         private void circleToolStripMenuItem_Click(object sender, EventArgs e)

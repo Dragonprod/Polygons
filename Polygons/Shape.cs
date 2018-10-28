@@ -69,6 +69,19 @@ namespace Polygons
             pen = Color.Green;
             radius = 20;
         }
+        public int CompareTo(Shape other)
+        {
+            if (x < other.x)
+                return -1;
+            else if (x > other.x)
+                return +1;
+            else if (y < other.y)
+                return -1;
+            else if (y > other.y)
+                return +1;
+            else
+                return 0;
+        }
         public abstract void Draw(Graphics gr);
         public abstract bool IsInside(int mouse_x, int mouse_y);
     }
