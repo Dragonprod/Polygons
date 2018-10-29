@@ -24,14 +24,6 @@ namespace Polygons
             InitializeComponent();
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint, true);
         }
-        void PreLoadForHull() //pre - load for Jarvis Convex Hull
-        {
-            if (figures.Count >= 3)
-            {
-                figures = ConvexHull_Main(figures);
-                Refresh();
-            }
-        }
         private void Form1_MouseDown(object sender, MouseEventArgs e)
         {
             bool IsMove = false;
@@ -75,7 +67,13 @@ namespace Polygons
                     Refresh();
                 }
             }
-            PreLoadForHull();
+            //pre-load for ConvexHull
+            if (byJarvisToolStripMenuItem.Checked)
+                if (figures.Count >= 3)
+                {
+                    figures = ConvexHull_Main(figures);
+                    Refresh();
+                }
         }
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -95,7 +93,6 @@ namespace Polygons
             }
             _x = e.X;
             _y = e.Y;
-            PreLoadForHull();
         }
         private void Form1_MouseUp(object sender, MouseEventArgs e)
         {
@@ -104,17 +101,14 @@ namespace Polygons
                 p1.FLAG = false;
                 p1.REMOVE = false;
             }
-            //foreach (Shape p1 in figures.ToArray())
+            //for(int i = 0; i<figures.Count; i++)
             //{
-
-            //        if (p1.TOREMOVE == true)
-            //        {
-            //            figures.Remove(p1);
-            //            Refresh();
-            //        }
-            //
+            //    if (figures[i].TOREMOVE)
+            //        figures.Remove(figures[i]);
+            //    break;
+            //}
+            
         }
-
         private void circleToolStripMenuItem_Click(object sender, EventArgs e)
         {
             triangleToolStripMenuItem1.Checked = false;
@@ -223,6 +217,8 @@ namespace Polygons
             {
                 if (figures.Count >= 3)
                 {
+                    //foreach (Shape p in figures)
+                    //    p.TOREMOVE = false;
                     int down = 0, up = 0;
                     for (int i = 0; i < figures.Count; i++)
                     {
@@ -230,7 +226,7 @@ namespace Polygons
                         {
                             k = ((float)figures[i + 1].Y - figures[i].Y) / (figures[i + 1].X - figures[i].X);
                             //k = figures[i].Y / figures[i].X;
-                            b = figures[i + 1].Y - k * figures[i + 1].X;
+                            b = (float)(figures[i].Y - k * figures[i].X);
                             //b = figures[i + 1].Y - ((figures[i + 1].Y - figures[i].Y) / (figures[i + 1].X - figures[i].X)) * figures[i + 1].X;
                             for (int z = 0; z < figures.Count; z++)
                             {
@@ -246,8 +242,8 @@ namespace Polygons
                                     }
                                     if (up == 0 || down == 0)
                                     {
-                                        figures[i].TOREMOVE = true;
-                                        figures[i + 1].TOREMOVE = false;
+                                        //figures[i].TOREMOVE = true;
+                                        //figures[i + 1].TOREMOVE = false;
                                         e.Graphics.DrawLine(new Pen(Color.Black), figures[0].X, figures[0].Y, figures[figures.Count - 1].X, figures[figures.Count - 1].Y);
                                         e.Graphics.DrawLine(new Pen(Color.Black), figures[i].X, figures[i].Y, figures[i + 1].X, figures[i + 1].Y);
                                     }
@@ -309,6 +305,11 @@ namespace Polygons
         private void byJarvisToolStripMenuItem_Click(object sender, EventArgs e)
         {
             byDefenitionToolStripMenuItem.Checked = false;
+            if (figures.Count >= 3)
+            {
+                figures = ConvexHull_Main(figures);
+                Refresh();
+            }
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
