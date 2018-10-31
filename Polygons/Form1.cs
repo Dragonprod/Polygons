@@ -101,13 +101,18 @@ namespace Polygons
                 p1.FLAG = false;
                 p1.REMOVE = false;
             }
+            if (figures.Count >= 3)
+            {
+                figures = ConvexHull_Main(figures);
+                Refresh();
+            }
             //for(int i = 0; i<figures.Count; i++)
             //{
             //    if (figures[i].TOREMOVE)
             //        figures.Remove(figures[i]);
             //    break;
             //}
-            
+
         }
         private void circleToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -272,7 +277,7 @@ namespace Polygons
             {
                 if (figures.Count >= 3)
                 {
-                    figures = ConvexHull_Main(figures);
+                    //figures = ConvexHull_Main(figures);
                     e.Graphics.DrawLine(new Pen(Color.Black), figures[0].X, figures[0].Y, figures[figures.Count - 1].X, figures[figures.Count - 1].Y);
                     for (int i = 0; i < figures.Count - 1; i++)
                     {
