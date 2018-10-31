@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Windows.Forms;
 using System.IO;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace Polygons
 {
@@ -101,11 +103,12 @@ namespace Polygons
                 p1.FLAG = false;
                 p1.REMOVE = false;
             }
-            if (figures.Count >= 3)
-            {
-                figures = ConvexHull_Main(figures);
-                Refresh();
-            }
+            if (byDefenitionToolStripMenuItem.Checked)
+                if (figures.Count >= 3)
+                {
+                    figures = ConvexHull_Main(figures);
+                    Refresh();
+                }
             //for(int i = 0; i<figures.Count; i++)
             //{
             //    if (figures[i].TOREMOVE)
@@ -350,10 +353,13 @@ namespace Polygons
                 MessageBox.Show("Error: Interval must be > or = 0", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
         private void testToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //Bitmap img = new Bitmap();
+            XmlSerializer ser = new XmlSerializer(typeof(List<Shape>));
+            string path = Path.GetRandomFileName();
+            FileStream file = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None);
+            ser.Serialize(file, figures);
+            file.Close();
         }
 
         private void timer1_Tick(object sender, EventArgs e)

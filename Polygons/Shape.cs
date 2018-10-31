@@ -9,11 +9,12 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Windows.Forms;
 using System.IO;
-
+using System.Xml.Serialization;
 namespace Polygons
 {
     public abstract class Shape
     {
+        [Serializable]
         protected static Color col, pen;
         protected static int radius;
         protected int x, y;
