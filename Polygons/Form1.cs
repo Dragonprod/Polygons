@@ -173,6 +173,19 @@ namespace Polygons
                 Refresh();
             }
         }
+        bool IsinConvexHull(Shape p)
+        {
+            bool result = false;
+            int j =  figures.Count - 1;
+            for (int i = 0; i < figures.Count; i++)
+            {
+                if ((figures[i].Y < p.Y && figures[j].Y >= p.Y || figures[j].Y < p.Y && figures[i].Y >= p.Y) &&
+                     (figures[i].X + (p.Y - figures[i].Y) / (figures[j].Y - figures[i].Y) * (figures[j].X - figures[i].X) < p.X))
+                    result = !result;
+                j = i;
+            }
+            return result;
+        }
         int Orientation(Shape p1, Shape p2, Shape p)
         {
             int Orin = (p2.X - p1.X) * (p.Y - p1.Y) - (p.X - p1.X) * (p2.Y - p1.Y);
