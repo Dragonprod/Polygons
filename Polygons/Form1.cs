@@ -18,7 +18,6 @@ namespace Polygons
     {
         List<Shape> figures = new List<Shape>();
         int _x, _y, RadMem = 20;
-        float k, b;
         Form2 set_r;
         Random rnd = new Random();
         public Form1()
@@ -38,6 +37,11 @@ namespace Polygons
                     p.REMOVE = true;
                     IsMove = true;
                 }
+                if (byJarvisToolStripMenuItem.Checked || byDefenitionToolStripMenuItem.Checked)
+                    if (IsinConvexHull(e.X, e.Y))
+                    {
+                        p.FLAG = true;
+                    }
             }
             if (e.Button == MouseButtons.Right)
             {
@@ -71,11 +75,25 @@ namespace Polygons
             }
             //pre-load for ConvexHull
             if (byJarvisToolStripMenuItem.Checked)
+            {
                 if (figures.Count >= 3)
                 {
                     figures = ConvexHull_Main(figures);
                     Refresh();
                 }
+            }
+            for (int i = 0; i < figures.Count; i++)
+            {
+                if (byDefenitionToolStripMenuItem.Checked)
+                    if (figures.Count >= 3)
+                    {
+                        if (figures[i].TOREMOVE)
+                        {
+                            figures.Remove(figures[i]);
+                            Refresh();
+                        }
+                    }
+            }
         }
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -103,19 +121,24 @@ namespace Polygons
                 p1.FLAG = false;
                 p1.REMOVE = false;
             }
-            if (byDefenitionToolStripMenuItem.Checked)
+            for (int i = 0; i < figures.Count; i++)
+            {
+                if (byDefenitionToolStripMenuItem.Checked)
+                    if (figures.Count >= 3)
+                    {
+                        if (figures[i].TOREMOVE)
+                        {
+                            figures.Remove(figures[i]);
+                            Refresh();
+                        }
+                    }
+            }
+            if (byJarvisToolStripMenuItem.Checked)
                 if (figures.Count >= 3)
                 {
                     figures = ConvexHull_Main(figures);
                     Refresh();
                 }
-            //for(int i = 0; i<figures.Count; i++)
-            //{
-            //    if (figures[i].TOREMOVE)
-            //        figures.Remove(figures[i]);
-            //    break;
-            //}
-
         }
         private void circleToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -140,9 +163,6 @@ namespace Polygons
 
         private void radiusToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //
-            //re-open lock
-            //
             if (set_r == null || set_r.IsDisposed)
             {
                 set_r = new Form2();
@@ -181,14 +201,14 @@ namespace Polygons
                 Refresh();
             }
         }
-        bool IsinConvexHull(Shape p)
+        bool IsinConvexHull(int mouse_X, int mouse_Y)
         {
             bool result = false;
-            int j =  figures.Count - 1;
+            int j = figures.Count - 1;
             for (int i = 0; i < figures.Count; i++)
             {
-                if ((figures[i].Y < p.Y && figures[j].Y >= p.Y || figures[j].Y < p.Y && figures[i].Y >= p.Y) &&
-                     (figures[i].X + (p.Y - figures[i].Y) / (figures[j].Y - figures[i].Y) * (figures[j].X - figures[i].X) < p.X))
+                if ((figures[i].Y < mouse_Y && figures[j].Y >= mouse_Y || figures[j].Y < mouse_Y && figures[i].Y >= mouse_Y) &&
+                     (figures[i].X + (mouse_Y - figures[i].Y) / (figures[j].Y - figures[i].Y) * (figures[j].X - figures[i].X) < mouse_X))
                     result = !result;
                 j = i;
             }
@@ -198,12 +218,12 @@ namespace Polygons
         {
             int Orin = (p2.X - p1.X) * (p.Y - p1.Y) - (p.X - p1.X) * (p2.Y - p1.Y);
             if (Orin > 0)
-                return -1; 
+                return -1;
             if (Orin < 0)
-                return 1; 
-            return 0; 
+                return 1;
+            return 0;
         }
-        List<Shape> ConvexHull_Main (List<Shape> figures)
+        List<Shape> ConvexHull_Main(List<Shape> figures)
         {
             if (figures.Count < 3)
                 return null;
@@ -231,44 +251,58 @@ namespace Polygons
         {
             foreach (Shape p1 in figures)
             {
-                p1.Draw(e.Graphics); 
+                p1.Draw(e.Graphics);
             }
             #region ConvexHull_ByDefenition
             if (byDefenitionToolStripMenuItem.Checked)
             {
                 if (figures.Count >= 3)
                 {
-                    //foreach (Shape p in figures)
-                    //    p.TOREMOVE = false;
-                    int down = 0, up = 0;
+                    foreach (Shape p in figures)
+                        p.TOREMOVE = true;
+                    float k = 0, b = 0;
+                    int up, down;
                     for (int i = 0; i < figures.Count; i++)
                     {
                         for (int j = i + 1; j < figures.Count; j++)
                         {
-                            k = ((float)figures[i + 1].Y - figures[i].Y) / (figures[i + 1].X - figures[i].X);
-                            //k = figures[i].Y / figures[i].X;
-                            b = (float)(figures[i].Y - k * figures[i].X);
-                            //b = figures[i + 1].Y - ((figures[i + 1].Y - figures[i].Y) / (figures[i + 1].X - figures[i].X)) * figures[i + 1].X;
-                            for (int z = 0; z < figures.Count; z++)
+                            k = (float)(figures[i].Y - figures[j].Y) / (figures[i].X - figures[j].X);
+                            b = (float)(figures[j].Y - k * figures[j].X);
+                            up = 0;
+                            down = 0;
+                            for (int m = 0; m < figures.Count; m++)
                             {
-                                if (figures[z] != figures[i] && figures[z] != figures[i + 1])
+                                if (m != i && m != j)
                                 {
-                                    if (figures[z].X * k < figures[z].Y)
+                                    if (figures[i].X != figures[j].X)
                                     {
-                                        down++;
+                                        if (figures[m].X * k + b <= figures[m].Y)
+                                        {
+                                            up++;
+                                        }
+                                        if (figures[m].X * k + b > figures[m].Y)
+                                        {
+                                            down++;
+                                        }
                                     }
-                                    if (figures[z].X * k > figures[z].Y)
+                                    else
                                     {
-                                        up++;
-                                    }
-                                    if (up == 0 || down == 0)
-                                    {
-                                        //figures[i].TOREMOVE = true;
-                                        //figures[i + 1].TOREMOVE = false;
-                                        e.Graphics.DrawLine(new Pen(Color.Black), figures[0].X, figures[0].Y, figures[figures.Count - 1].X, figures[figures.Count - 1].Y);
-                                        e.Graphics.DrawLine(new Pen(Color.Black), figures[i].X, figures[i].Y, figures[i + 1].X, figures[i + 1].Y);
+                                        if (figures[m].X < figures[i].X)
+                                        {
+                                            up++;
+                                        }
+                                        if (figures[m].X > figures[i].X)
+                                        {
+                                            down++;
+                                        }
                                     }
                                 }
+                            }
+                            if (up == 0 || down == 0)
+                            {
+                                figures[i].TOREMOVE = false;
+                                figures[j].TOREMOVE = false;
+                                e.Graphics.DrawLine(new Pen(Color.Black), figures[j].X, figures[j].Y, figures[i].X, figures[i].Y);
                             }
                         }
                     }
@@ -299,13 +333,13 @@ namespace Polygons
                 timer1.Interval = int.Parse(textBox1.Text);
                 timer1.Enabled = true;
             }
-            catch(FormatException)
+            catch (FormatException)
             {
-                textBox1.Text = null; 
+                textBox1.Text = null;
                 timer1.Enabled = false;
                 MessageBox.Show("Error: Only numbers\nInterval must be set", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            catch(IndexOutOfRangeException)
+            catch (IndexOutOfRangeException)
             {
                 textBox1.Text = null;
                 timer1.Enabled = false;
@@ -321,6 +355,7 @@ namespace Polygons
         private void byDefenitionToolStripMenuItem_Click(object sender, EventArgs e)
         {
             byJarvisToolStripMenuItem.Checked = false;
+            Refresh();
         }
 
         private void byJarvisToolStripMenuItem_Click(object sender, EventArgs e)
@@ -364,6 +399,12 @@ namespace Polygons
 
         private void timer1_Tick(object sender, EventArgs e)
         {
+            if (byJarvisToolStripMenuItem.Checked)
+                if (figures.Count >= 3)
+                {
+                    figures = ConvexHull_Main(figures);
+                    Refresh();
+                }
             foreach (Shape p in figures)
             {
                 p.X = p.X + rnd.Next(-1, 2);
