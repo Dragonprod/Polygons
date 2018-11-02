@@ -207,8 +207,8 @@ namespace Polygons
             int j = figures.Count - 1;
             for (int i = 0; i < figures.Count; i++)
             {
-                if ((figures[i].Y < mouse_Y && figures[j].Y >= mouse_Y || figures[j].Y < mouse_Y && figures[i].Y >= mouse_Y) &&
-                     (figures[i].X + (mouse_Y - figures[i].Y) / (figures[j].Y - figures[i].Y) * (figures[j].X - figures[i].X) < mouse_X))
+                if ((((figures[i].Y <= mouse_Y) && (mouse_Y < figures[j].Y)) || ((figures[j].Y <= mouse_Y) && (mouse_Y < figures[i].Y))) &&
+       (mouse_X > (figures[j].X - figures[i].X) * (mouse_Y - figures[i].Y) / (figures[j].Y - figures[i].Y) + figures[i].X))
                     result = !result;
                 j = i;
             }
