@@ -12,7 +12,8 @@ using System.IO;
 using System.Xml.Serialization;
 namespace Polygons
 {
-    class Triangle : Shape
+    [Serializable]
+    public class Triangle : Shape
     {
         PointF[] p = new PointF[3];
         public Triangle(int x, int y) : base(x, y)

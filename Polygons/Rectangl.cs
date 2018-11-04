@@ -12,7 +12,8 @@ using System.IO;
 using System.Xml.Serialization;
 namespace Polygons
 {
-    class Rectangl : Shape
+    [Serializable]
+    public class Rectangl : Shape
     {
         public Rectangl(int x, int y) : base(x, y)
         {

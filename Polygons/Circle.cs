@@ -12,7 +12,8 @@ using System.IO;
 using System.Xml.Serialization;
 namespace Polygons
 {
-    class Circle : Shape
+    [Serializable]
+    public class Circle : Shape
     {
         public Circle(int x, int y) : base(x, y)
         {

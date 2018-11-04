@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Polygons
 {
@@ -388,15 +389,18 @@ namespace Polygons
                 MessageBox.Show("Error: Interval must be > or = 0", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        private void testToolStripMenuItem_Click(object sender, EventArgs e)
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try
             {
-                Stream stream = File.OpenWrite(Environment.CurrentDirectory + "\\data.xml");
-                XmlSerializer ser = new XmlSerializer(typeof(List<Shape>));
-                ser.Serialize(stream, figures);
-                stream.Close();
+                BinaryFormatter binFormat = new BinaryFormatter();
+                Stream stream = File.OpenWrite(Environment.CurrentDirectory + "\\data.dat");
+                //XmlSerializer ser = new XmlSerializer(typeof(Shape));
+                //ser.Serialize(stream, figures);
+                //stream.Close();
+                binFormat.Serialize(stream, figures);
                 Console.WriteLine("Succes");
+                stream.Close();
             }
             catch(InvalidOperationException)
             {
@@ -412,6 +416,15 @@ namespace Polygons
             //ser.Serialize(file, figures);
             //file.Close();
 
+        }
+
+        private void loadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            BinaryFormatter binFormat = new BinaryFormatter();
+            Stream stream = File.OpenRead("data.dat");
+            figures = (List<Shape>)binFormat.Deserialize(stream);
+            Refresh();
+            stream.Close();
         }
 
         private void timer1_Tick(object sender, EventArgs e)
