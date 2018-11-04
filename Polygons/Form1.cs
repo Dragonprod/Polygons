@@ -434,7 +434,7 @@ namespace Polygons
         {
             try
             {
-                if (saveD.FileName == null)
+                if (!saveD.CheckFileExists)
                 {
                     saveD.ShowDialog();
                 }
