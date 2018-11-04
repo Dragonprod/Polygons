@@ -390,11 +390,28 @@ namespace Polygons
         }
         private void testToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            XmlSerializer ser = new XmlSerializer(typeof(List<Shape>));
-            string path = Path.GetRandomFileName();
-            FileStream file = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None);
-            ser.Serialize(file, figures);
-            file.Close();
+            try
+            {
+                Stream stream = File.OpenWrite(Environment.CurrentDirectory + "\\data.xml");
+                XmlSerializer ser = new XmlSerializer(typeof(List<Shape>));
+                ser.Serialize(stream, figures);
+                stream.Close();
+                Console.WriteLine("Succes");
+            }
+            catch(InvalidOperationException)
+            {
+                Console.WriteLine("Error");
+            }
+            //XmlSerializer formatter = new XmlSerializer(typeof(List<Shape>));
+            //FileStream fs = new FileStream("persons.xml", FileMode.OpenOrCreate);
+            //formatter.Serialize(fs, figures);
+            //
+            //XmlSerializer ser = new XmlSerializer(typeof(List<Shape>));
+            //string path = Path.GetRandomFileName();
+            //FileStream file = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None);
+            //ser.Serialize(file, figures);
+            //file.Close();
+
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -411,6 +428,7 @@ namespace Polygons
                 p.Y = p.Y + rnd.Next(-1, 2);
                 Refresh();
             }
+            Refresh();
         }
 
         private void Form1_Resize(object sender, EventArgs e)

@@ -12,48 +12,59 @@ using System.IO;
 using System.Xml.Serialization;
 namespace Polygons
 {
+    [Serializable]
+    [XmlInclude(typeof(Circle))]
+    [XmlInclude(typeof(Triangle))]
+    [XmlInclude(typeof(Rectangl))]
     public abstract class Shape
     {
-        [Serializable]
         protected static Color col, pen;
         protected static int radius;
         protected int x, y;
         protected bool flag, remove, ToRemove;
+        [XmlElement("X")]
         public int X
         {
             get { return x; }
             set { x = value; }
         }
+        [XmlElement("Y")]
         public int Y
         {
             get { return y; }
             set { y = value; }
         }
+        [XmlIgnore]
         public bool FLAG
         {
             get { return flag; }
             set { flag = value; }
         }
+        [XmlIgnore]
         public bool REMOVE
         {
             get { return remove; }
             set { remove = value; }
         }
+        [XmlIgnore]
         public bool TOREMOVE
         {
             get { return ToRemove; }
             set { ToRemove = value; }
         }
+        [XmlElement("RADIUS")]
         public int RADIUS
         {
             get { return radius; }
             set { radius = value; }
         }
+        [XmlElement("INSIDECOLOR")]
         public Color COL
         {
             get { return col; }
             set { col = value; }
         }
+        [XmlElement("OUTSIDECOLOR")]
         public Color PEN
         {
             get { return pen; }
@@ -69,19 +80,6 @@ namespace Polygons
             col = Color.Red;
             pen = Color.Green;
             radius = 20;
-        }
-        public int CompareTo(Shape other)
-        {
-            if (x < other.x)
-                return -1;
-            else if (x > other.x)
-                return +1;
-            else if (y < other.y)
-                return -1;
-            else if (y > other.y)
-                return +1;
-            else
-                return 0;
         }
         public abstract void Draw(Graphics gr);
         public abstract bool IsInside(int mouse_x, int mouse_y);
