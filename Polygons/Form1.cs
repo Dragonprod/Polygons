@@ -18,11 +18,13 @@ namespace Polygons
 {
     public partial class Form1 : Form
     {
-        DateTime date = new DateTime();
         List<Shape> figures = new List<Shape>();
         int _x, _y, RadMem = 20;
         Form2 set_r;
         Random rnd = new Random();
+        SaveFileDialog saveD = new SaveFileDialog();
+        OpenFileDialog openD = new OpenFileDialog();
+
         public Form1()
         {
             InitializeComponent();
@@ -30,7 +32,7 @@ namespace Polygons
         }
         private void Log(string msg)
         {
-            File.AppendAllText("log.txt", msg);
+            File.AppendAllText("log.txt", msg + "\n");
         }
         private void Form1_MouseDown(object sender, MouseEventArgs e)
         {
@@ -101,11 +103,17 @@ namespace Polygons
                         }
                     }
             }
+            Log(DateTime.Now.ToString() + ": EVENT MOUSE_DOWN");
         }
         private void Form1_Load(object sender, EventArgs e)
         {
             figures.Add(new Circle(ClientSize.Width / 2, ClientSize.Height / 2));
             Refresh();
+            Log(DateTime.Now.ToString() + ": LOAD: Default circle add");
+            openD.Filter = "All files (*.*)|*.*|data file *.dat|*.dat";
+            openD.FilterIndex = 2;
+            saveD.Filter = "All files (*.*)|*.*|data file *.dat|*.dat";
+            saveD.FilterIndex = 2;
         }
         private void Form1_MouseMove(object sender, MouseEventArgs e)
         {
@@ -120,6 +128,7 @@ namespace Polygons
             }
             _x = e.X;
             _y = e.Y;
+            Log(DateTime.Now.ToString() + ": EVENT MOUSE_MOVE");
         }
         private void Form1_MouseUp(object sender, MouseEventArgs e)
         {
@@ -146,25 +155,48 @@ namespace Polygons
                     figures = ConvexHull_Main(figures);
                     Refresh();
                 }
+            Log(DateTime.Now.ToString() + ": EVENT MOUSE_UP");
         }
         private void circleToolStripMenuItem_Click(object sender, EventArgs e)
         {
             triangleToolStripMenuItem1.Checked = false;
             squareToolStripMenuItem1.Checked = false;
+            Log(DateTime.Now.ToString() + ": TYPE type changed, new type - circle");
         }
         private void triangleToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             circleToolStripMenuItem.Checked = false;
             squareToolStripMenuItem1.Checked = false;
+            Log(DateTime.Now.ToString() + ": TYPE type changed, new type - triangle");
         }
         private void squareToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             triangleToolStripMenuItem1.Checked = false;
             circleToolStripMenuItem.Checked = false;
+            Log(DateTime.Now.ToString() + ": TYPE type changed, new type - square");
         }
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Application.Restart();
+            try
+            {
+                SaveFileDialog saveD = new SaveFileDialog();
+                saveD.Filter = "All files (*.*)|*.*|data file *.dat|*.dat";
+                saveD.FilterIndex = 2;
+                saveD.ShowDialog();
+                figures.Clear();
+                figures.Add(new Circle(ClientSize.Width / 2, ClientSize.Height / 2));
+                Refresh();
+            }
+            catch (InvalidOperationException)
+            {
+                Log(DateTime.Now.ToString() + ": Save error(InvalidOperationException)");
+            }
+            catch (ArgumentException)
+            {
+                MessageBox.Show("Error: name must be set", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Log(DateTime.Now.ToString() + ": Save error(ArgumentException");
+            }
+
         }
         private void radiusToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -185,6 +217,7 @@ namespace Polygons
                 p.RADIUS = set_r.Radius;
                 Refresh();
             }
+            Log(DateTime.Now.ToString() + ": RADIUS radius changed, new radius - " + set_r.Radius.ToString());
             RadMem = set_r.Radius;
         }
         private void insideToolStripMenuItem_Click(object sender, EventArgs e)
@@ -195,6 +228,7 @@ namespace Polygons
                 p1.COL = colorDialog1.Color;
                 Refresh();
             }
+            Log(DateTime.Now.ToString() + ": COLOR inside color changed, new color:" + colorDialog1.Color.ToString());
         }
         private void outsideToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -204,6 +238,7 @@ namespace Polygons
                 p1.PEN = colorDialog1.Color;
                 Refresh();
             }
+            Log(DateTime.Now.ToString() + ": COLOR outside color changed, new color:" + colorDialog1.Color.ToString());
         }
         bool IsinConvexHull(int mouse_X, int mouse_Y)
         {
@@ -218,7 +253,7 @@ namespace Polygons
             }
             return result;
         }
-        int Orientation(Shape p1, Shape p2, Shape p)
+        private int Orientation(Shape p1, Shape p2, Shape p)
         {
             int Orin = (p2.X - p1.X) * (p.Y - p1.Y) - (p.X - p1.X) * (p2.Y - p1.Y);
             if (Orin > 0)
@@ -227,7 +262,7 @@ namespace Polygons
                 return 1;
             return 0;
         }
-        List<Shape> ConvexHull_Main(List<Shape> figures)
+        private List<Shape> ConvexHull_Main(List<Shape> figures)
         {
             if (figures.Count < 3)
                 return null;
@@ -336,27 +371,32 @@ namespace Polygons
                 if (int.Parse(textBox1.Text) <= 0) throw new IndexOutOfRangeException();
                 timer1.Interval = int.Parse(textBox1.Text);
                 timer1.Enabled = true;
+                Log(DateTime.Now.ToString() + "ANIMATION Timer enavled");
             }
             catch (FormatException)
             {
                 textBox1.Text = null;
                 timer1.Enabled = false;
                 MessageBox.Show("Error: Only numbers\nInterval must be set", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Log(DateTime.Now.ToString() + ": ANIMATION Error: Only numbers\nInterval must be set");
             }
             catch (IndexOutOfRangeException)
             {
                 textBox1.Text = null;
                 timer1.Enabled = false;
                 MessageBox.Show("Error: Interval must be > or = 0", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Log(DateTime.Now.ToString() + ": ANIMATION Error: Interval must be > or = 0");
             }
         }
         private void button2_Click(object sender, EventArgs e)
         {
             timer1.Enabled = false;
+            Log(DateTime.Now.ToString() + "ANIMATION Timer disabled");
         }
         private void byDefenitionToolStripMenuItem_Click(object sender, EventArgs e)
         {
             byJarvisToolStripMenuItem.Checked = false;
+            Log(DateTime.Now.ToString() + ": CONVEXHULL Succes by Defenition");
             Refresh();
         }
         private void byJarvisToolStripMenuItem_Click(object sender, EventArgs e)
@@ -365,6 +405,7 @@ namespace Polygons
             if (figures.Count >= 3)
             {
                 figures = ConvexHull_Main(figures);
+                Log(DateTime.Now.ToString() + ": CONVEXHULL Succes by Jarvis");
                 Refresh();
             }
         }
@@ -380,40 +421,63 @@ namespace Polygons
                 textBox1.Text = null;
                 timer1.Enabled = false;
                 MessageBox.Show("Error: Only numbers\nInterval must be set", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Log(DateTime.Now.ToString() + ": ANIMATION Error: Only numbers\nInterval must be set");
             }
             catch (IndexOutOfRangeException)
             {
                 textBox1.Text = null;
                 timer1.Enabled = false;
                 MessageBox.Show("Error: Interval must be > or = 0", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Log(DateTime.Now.ToString() + ": ANIMATION Error: Interval must be > or = 0");
             }
         }
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try
             {
+                if (saveD.FileName == null)
+                {
+                    saveD.ShowDialog();
+                }
                 BinaryFormatter binFormat = new BinaryFormatter();
-                Stream stream = File.OpenWrite(Environment.CurrentDirectory + "\\data.dat");
+                Stream stream = File.OpenWrite(saveD.FileName);
                 //XmlSerializer ser = new XmlSerializer(typeof(Shape));
                 //ser.Serialize(stream, figures);
                 binFormat.Serialize(stream, figures);
-                Log(date.ToString() + ": Succes");
+                Log(DateTime.Now.ToString() + ": Save succes");
                 stream.Close();
             }
             catch(InvalidOperationException)
             {
-                Log(date.ToString() + ": Error(InvalidOperationException)");
+                Log(DateTime.Now.ToString() + ": Save error(InvalidOperationException)");
             }
-
-
+            catch (ArgumentException)
+            {
+                MessageBox.Show("Error: name must be set", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Log(DateTime.Now.ToString() + ": Save error(ArgumentException");
+            }
         }
         private void loadToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            BinaryFormatter binFormat = new BinaryFormatter();
-            Stream stream = File.OpenRead("data.dat");
-            figures = (List<Shape>)binFormat.Deserialize(stream);
-            Refresh();
-            stream.Close();
+            try
+            {
+                openD.ShowDialog();
+                BinaryFormatter binFormat = new BinaryFormatter();
+                Stream stream = File.OpenRead("data.dat");
+                figures = (List<Shape>)binFormat.Deserialize(stream);
+                Refresh();
+                stream.Close();
+                Log(DateTime.Now.ToString() + ": Load succes");
+            }
+            catch (InvalidOperationException)
+            {
+                Log(DateTime.Now.ToString() + ": Save error(InvalidOperationException)");
+            }
+            catch (ArgumentException)
+            {
+                MessageBox.Show("Error: name must be set", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Log(DateTime.Now.ToString() + ": Save error(ArgumentException");
+            }
         }
         private void timer1_Tick(object sender, EventArgs e)
         {
