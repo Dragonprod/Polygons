@@ -12,11 +12,13 @@ using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Runtime.Serialization.Json;
 
 namespace Polygons
 {
     public partial class Form1 : Form
     {
+        DateTime date = new DateTime();
         List<Shape> figures = new List<Shape>();
         int _x, _y, RadMem = 20;
         Form2 set_r;
@@ -25,6 +27,10 @@ namespace Polygons
         {
             InitializeComponent();
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer | ControlStyles.UserPaint, true);
+        }
+        private void Log(string msg)
+        {
+            File.AppendAllText("log.txt", msg);
         }
         private void Form1_MouseDown(object sender, MouseEventArgs e)
         {
@@ -156,12 +162,10 @@ namespace Polygons
             triangleToolStripMenuItem1.Checked = false;
             circleToolStripMenuItem.Checked = false;
         }
-
         private void newToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Application.Restart();
         }
-
         private void radiusToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (set_r == null || set_r.IsDisposed)
@@ -174,7 +178,6 @@ namespace Polygons
             else set_r.Activate();
             set_r.RadiusChanged += Set_r_RadiusChanged;
         }
-
         private void Set_r_RadiusChanged(object sender, EventArgs e)
         {
             foreach (Shape p in figures)
@@ -347,18 +350,15 @@ namespace Polygons
                 MessageBox.Show("Error: Interval must be > or = 0", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
         private void button2_Click(object sender, EventArgs e)
         {
             timer1.Enabled = false;
         }
-
         private void byDefenitionToolStripMenuItem_Click(object sender, EventArgs e)
         {
             byJarvisToolStripMenuItem.Checked = false;
             Refresh();
         }
-
         private void byJarvisToolStripMenuItem_Click(object sender, EventArgs e)
         {
             byDefenitionToolStripMenuItem.Checked = false;
@@ -368,7 +368,6 @@ namespace Polygons
                 Refresh();
             }
         }
-
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
             try
@@ -397,27 +396,17 @@ namespace Polygons
                 Stream stream = File.OpenWrite(Environment.CurrentDirectory + "\\data.dat");
                 //XmlSerializer ser = new XmlSerializer(typeof(Shape));
                 //ser.Serialize(stream, figures);
-                //stream.Close();
                 binFormat.Serialize(stream, figures);
-                Console.WriteLine("Succes");
+                Log(date.ToString() + ": Succes");
                 stream.Close();
             }
             catch(InvalidOperationException)
             {
-                Console.WriteLine("Error");
+                Log(date.ToString() + ": Error(InvalidOperationException)");
             }
-            //XmlSerializer formatter = new XmlSerializer(typeof(List<Shape>));
-            //FileStream fs = new FileStream("persons.xml", FileMode.OpenOrCreate);
-            //formatter.Serialize(fs, figures);
-            //
-            //XmlSerializer ser = new XmlSerializer(typeof(List<Shape>));
-            //string path = Path.GetRandomFileName();
-            //FileStream file = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None);
-            //ser.Serialize(file, figures);
-            //file.Close();
+
 
         }
-
         private void loadToolStripMenuItem_Click(object sender, EventArgs e)
         {
             BinaryFormatter binFormat = new BinaryFormatter();
@@ -426,7 +415,6 @@ namespace Polygons
             Refresh();
             stream.Close();
         }
-
         private void timer1_Tick(object sender, EventArgs e)
         {
             if (byJarvisToolStripMenuItem.Checked)
@@ -443,7 +431,6 @@ namespace Polygons
             }
             Refresh();
         }
-
         private void Form1_Resize(object sender, EventArgs e)
         {
             Refresh();
