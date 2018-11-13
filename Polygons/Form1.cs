@@ -19,11 +19,14 @@ namespace Polygons
     {
         List<Shape> figures = new List<Shape>();
         int _x, _y, RadMem = 20;
+        string FileName_get = null;
+        bool tmp_save_flag = true;
         Form2 set_r;
         Random rnd = new Random();
-        SaveFileDialog saveD = new SaveFileDialog();
-        OpenFileDialog openD = new OpenFileDialog();
-
+        SaveFileDialog saveD;
+        OpenFileDialog openD;
+        BinaryFormatter binFormat = new BinaryFormatter();
+        Stream stream;
         public Form1()
         {
             InitializeComponent();
@@ -109,10 +112,6 @@ namespace Polygons
             figures.Add(new Circle(ClientSize.Width / 2, ClientSize.Height / 2));
             Refresh();
             Log(DateTime.Now.ToString() + ": LOAD: Default circle add");
-            openD.Filter = "All files (*.*)|*.*|data file *.dat|*.dat";
-            openD.FilterIndex = 2;
-            saveD.Filter = "All files (*.*)|*.*|data file *.dat|*.dat";
-            saveD.FilterIndex = 2;
         }
         private void Form1_MouseMove(object sender, MouseEventArgs e)
         {
@@ -178,11 +177,13 @@ namespace Polygons
         {
             try
             {
-                SaveFileDialog saveD = new SaveFileDialog();
+                saveD = new SaveFileDialog();
                 saveD.Filter = "All files (*.*)|*.*|data file *.dat|*.dat";
                 saveD.FilterIndex = 2;
                 saveD.ShowDialog();
                 figures.Clear();
+                FileName_get = saveD.FileName;
+                tmp_save_flag = false;
                 figures.Add(new Circle(ClientSize.Width / 2, ClientSize.Height / 2));
                 Refresh();
             }
@@ -195,7 +196,62 @@ namespace Polygons
                 MessageBox.Show("Error: name must be set", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Log(DateTime.Now.ToString() + ": Save error(ArgumentException");
             }
+        }
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                saveD = new SaveFileDialog();
+                if(tmp_save_flag)
+                    if (!saveD.CheckFileExists)
+                    {
+                        saveD.Filter = "All files (*.*)|*.*|data file *.dat|*.dat";
+                        saveD.FilterIndex = 2;
+                        saveD.ShowDialog();
+                        FileName_get = saveD.FileName;
+                        tmp_save_flag = false;
+                    }
+                stream = File.OpenWrite(FileName_get);
+                FileName_get = saveD.FileName;
+                binFormat.Serialize(stream, figures);
+                Log(DateTime.Now.ToString() + ": Save succes");
+                stream.Close();
 
+            }
+            catch (InvalidOperationException)
+            {
+                Log(DateTime.Now.ToString() + ": Save error(InvalidOperationException)");
+            }
+            catch (ArgumentException)
+            {
+                MessageBox.Show("Error: name must be set", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Log(DateTime.Now.ToString() + ": Save error(ArgumentException)");
+            }
+        }
+        private void loadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                openD = new OpenFileDialog();
+                openD.Filter = "All files (*.*)|*.*|data file *.dat|*.dat";
+                openD.FilterIndex = 2;
+                openD.ShowDialog();
+                FileName_get = openD.FileName;
+                stream = File.OpenRead(FileName_get);
+                figures = (List<Shape>)binFormat.Deserialize(stream);
+                Refresh();
+                stream.Close();
+                Log(DateTime.Now.ToString() + ": Load succes");
+            }
+            catch (InvalidOperationException)
+            {
+                Log(DateTime.Now.ToString() + ": Save error(InvalidOperationException)");
+            }
+            catch (ArgumentException)
+            {
+                MessageBox.Show("Error: name must be set", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Log(DateTime.Now.ToString() + ": Save error(ArgumentException");
+            }
         }
         private void radiusToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -428,54 +484,6 @@ namespace Polygons
                 timer1.Enabled = false;
                 MessageBox.Show("Error: Interval must be > or = 0", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Log(DateTime.Now.ToString() + ": ANIMATION Error: Interval must be > or = 0");
-            }
-        }
-        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (!saveD.CheckFileExists)
-                {
-                    saveD.ShowDialog();
-                }
-                BinaryFormatter binFormat = new BinaryFormatter();
-                Stream stream = File.OpenWrite(saveD.FileName);
-                //XmlSerializer ser = new XmlSerializer(typeof(Shape));
-                //ser.Serialize(stream, figures);
-                binFormat.Serialize(stream, figures);
-                Log(DateTime.Now.ToString() + ": Save succes");
-                stream.Close();
-            }
-            catch(InvalidOperationException)
-            {
-                Log(DateTime.Now.ToString() + ": Save error(InvalidOperationException)");
-            }
-            catch (ArgumentException)
-            {
-                MessageBox.Show("Error: name must be set", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Log(DateTime.Now.ToString() + ": Save error(ArgumentException");
-            }
-        }
-        private void loadToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                openD.ShowDialog();
-                BinaryFormatter binFormat = new BinaryFormatter();
-                Stream stream = File.OpenRead("data.dat");
-                figures = (List<Shape>)binFormat.Deserialize(stream);
-                Refresh();
-                stream.Close();
-                Log(DateTime.Now.ToString() + ": Load succes");
-            }
-            catch (InvalidOperationException)
-            {
-                Log(DateTime.Now.ToString() + ": Save error(InvalidOperationException)");
-            }
-            catch (ArgumentException)
-            {
-                MessageBox.Show("Error: name must be set", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Log(DateTime.Now.ToString() + ": Save error(ArgumentException");
             }
         }
         private void timer1_Tick(object sender, EventArgs e)
