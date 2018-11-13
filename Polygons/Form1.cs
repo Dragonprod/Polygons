@@ -419,6 +419,22 @@ namespace Polygons
             }
             #endregion
         }
+        private void byDefenitionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            byJarvisToolStripMenuItem.Checked = false;
+            Log(DateTime.Now.ToString() + ": CONVEXHULL Succes by Defenition");
+            Refresh();
+        }
+        private void byJarvisToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            byDefenitionToolStripMenuItem.Checked = false;
+            if (figures.Count >= 3)
+            {
+                figures = ConvexHull_Main(figures);
+                Log(DateTime.Now.ToString() + ": CONVEXHULL Succes by Jarvis");
+                Refresh();
+            }
+        }
         private void button1_Click(object sender, EventArgs e)
         {
             try
@@ -447,22 +463,6 @@ namespace Polygons
         {
             timer1.Enabled = false;
             Log(DateTime.Now.ToString() + "ANIMATION Timer disabled");
-        }
-        private void byDefenitionToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            byJarvisToolStripMenuItem.Checked = false;
-            Log(DateTime.Now.ToString() + ": CONVEXHULL Succes by Defenition");
-            Refresh();
-        }
-        private void byJarvisToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            byDefenitionToolStripMenuItem.Checked = false;
-            if (figures.Count >= 3)
-            {
-                figures = ConvexHull_Main(figures);
-                Log(DateTime.Now.ToString() + ": CONVEXHULL Succes by Jarvis");
-                Refresh();
-            }
         }
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
