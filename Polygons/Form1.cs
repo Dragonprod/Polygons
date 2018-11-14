@@ -18,7 +18,7 @@ namespace Polygons
     public partial class Form1 : Form
     {
         List<Shape> figures = new List<Shape>();
-        int _x, _y, RadMem = 20;
+        int _x, _y, RadMem = 20, currentIndex = -1;
         string FileName_get = null;
         bool tmp_save_flag = true;
         Form2 set_r;
@@ -486,10 +486,10 @@ namespace Polygons
                 Log(DateTime.Now.ToString() + ": ANIMATION Error: Interval must be > or = 0");
             }
         }
-
+        #region UNDO_REDO
         private void undoToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            
         }
 
         private void redoToolStripMenuItem_Click(object sender, EventArgs e)
@@ -497,6 +497,40 @@ namespace Polygons
 
         }
 
+        //private bool CanUndo { get { return currentIndex >= 0; } }
+        //private bool CanRedo { get { return figures.Count > 0 && currentIndex < figures.Count - 1; } }
+        //private void Undo()
+        //{
+        //    if (!CanUndo)
+        //        return;
+        //    figures[currentIndex].Undo();
+        //    currentIndex--;
+        //}
+        //private void Redo()
+        //{
+        //    if (!CanRedo)
+        //        return;
+        //    currentIndex++;
+        //    figures[currentIndex].Redo(document);
+        //}
+        //public void Add()
+        //{
+        //    items.Add(item);
+        //    this.currentIndex++;
+        //}
+        //private void CutOffHistory()
+        //{
+        //    int index = currentIndex + 1;
+        //    if (index < figures.Count)
+        //        figures.RemoveRange(index, figures.Count - index);
+        //}
+        //void DoAction()
+        //{
+        //    //HistoryItem item = CreateActionHistoryItem();
+        //    document.History.Add(item);
+        //    item.Redo(document);
+        //}
+        #endregion
         private void timer1_Tick(object sender, EventArgs e)
         {
             if (byJarvisToolStripMenuItem.Checked)
