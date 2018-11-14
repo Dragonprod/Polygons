@@ -486,6 +486,17 @@ namespace Polygons
                 Log(DateTime.Now.ToString() + ": ANIMATION Error: Interval must be > or = 0");
             }
         }
+
+        private void undoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void redoToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
         private void timer1_Tick(object sender, EventArgs e)
         {
             if (byJarvisToolStripMenuItem.Checked)
