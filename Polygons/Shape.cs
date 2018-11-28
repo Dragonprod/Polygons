@@ -81,8 +81,8 @@ namespace Polygons
             pen = Color.Green;
             radius = 20;
         }
-        public abstract void Undo(Shape p);
-        public abstract void Redo(Shape p);
+        //public abstract void Undo(Shape p);
+        //public abstract void Redo(Shape p);
         public abstract void Draw(Graphics gr);
         public abstract bool IsInside(int mouse_x, int mouse_y);
     }
