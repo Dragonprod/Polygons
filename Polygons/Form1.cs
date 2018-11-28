@@ -18,7 +18,9 @@ namespace Polygons
     public partial class Form1 : Form
     {
         List<Shape> figures = new List<Shape>();
-        int _x, _y, RadMem = 20, currentIndex = -1;
+		Stack<List<Shape>> F_Undo = new Stack<List<Shape>>();
+		Stack<List<Shape>> F_Redo = new Stack<List<Shape>>();
+		int _x, _y, RadMem = 20, currentIndex = -1;
         string FileName_get = null;
         bool tmp_save_flag = true;
         Form2 set_r;
@@ -38,7 +40,7 @@ namespace Polygons
         }
         private void Form1_MouseDown(object sender, MouseEventArgs e)
         {
-            bool IsMove = false;
+			bool IsMove = false;
             _x = e.X; _y = e.Y;
             foreach (Shape p in figures.ToArray())
             {
@@ -71,17 +73,20 @@ namespace Polygons
                 if (circleToolStripMenuItem.Checked == true)
                 {
                     figures.Add(new Circle(e.X, e.Y));
-                    Refresh();
+					F_Undo.Push(figures);
+					Refresh();
                 }
                 else if (triangleToolStripMenuItem1.Checked == true)
                 {
                     figures.Add(new Triangle(e.X, e.Y));
-                    Refresh();
+					F_Undo.Push(figures);
+					Refresh();
                 }
                 else if (squareToolStripMenuItem1.Checked == true)
                 {
                     figures.Add(new Rectangl(e.X, e.Y));
-                    Refresh();
+					F_Undo.Push(figures);
+					Refresh();
                 }
             }
             //pre-load for ConvexHull
@@ -489,47 +494,25 @@ namespace Polygons
         #region UNDO_REDO
         private void undoToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            
+			if (figures.Count < 1)
+				return;
+			F_Redo.Push(figures);
+			MessageBox.Show("Redo " + F_Redo.Count.ToString());
+			figures.RemoveAt(figures.Count - 1);
+			figures = F_Undo.Pop();
+			MessageBox.Show("Undo " + F_Undo.Count.ToString());
+			Refresh();
         }
 
         private void redoToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
-        }
-
-        //private bool CanUndo { get { return currentIndex >= 0; } }
-        //private bool CanRedo { get { return figures.Count > 0 && currentIndex < figures.Count - 1; } }
-        //private void Undo()
-        //{
-        //    if (!CanUndo)
-        //        return;
-        //    figures[currentIndex].Undo();
-        //    currentIndex--;
-        //}
-        //private void Redo()
-        //{
-        //    if (!CanRedo)
-        //        return;
-        //    currentIndex++;
-        //    figures[currentIndex].Redo(document);
-        //}
-        //public void Add()
-        //{
-        //    items.Add(item);
-        //    this.currentIndex++;
-        //}
-        //private void CutOffHistory()
-        //{
-        //    int index = currentIndex + 1;
-        //    if (index < figures.Count)
-        //        figures.RemoveRange(index, figures.Count - index);
-        //}
-        //void DoAction()
-        //{
-        //    //HistoryItem item = CreateActionHistoryItem();
-        //    document.History.Add(item);
-        //    item.Redo(document);
-        //}
+			if (figures.Count < 1)
+				return;
+			MessageBox.Show("Redo " + F_Redo.Count.ToString());
+			figures = F_Redo.Pop();
+			MessageBox.Show("Fig " + figures.Count.ToString());
+			Refresh();
+		}
         #endregion
         private void timer1_Tick(object sender, EventArgs e)
         {
