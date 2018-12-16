@@ -300,20 +300,53 @@ namespace Polygons
             }
             Log(DateTime.Now.ToString() + ": COLOR outside color changed, new color:" + colorDialog1.Color.ToString());
         }
-        bool IsinConvexHull(int mouse_X, int mouse_Y)
-        {
-            bool result = false;
-            int j = figures.Count - 1;
-            for (int i = 0; i < figures.Count; i++)
-            {
-                if ((((figures[i].Y <= mouse_Y) && (mouse_Y < figures[j].Y)) || ((figures[j].Y <= mouse_Y) && (mouse_Y < figures[i].Y))) &&
-       (mouse_X > (figures[j].X - figures[i].X) * (mouse_Y - figures[i].Y) / (figures[j].Y - figures[i].Y) + figures[i].X))
-                    result = !result;
-                j = i;
-            }
-            return result;
-        }
-        private int Orientation(Shape p1, Shape p2, Shape p)
+       // bool IsinConvexHull(int mouse_X, int mouse_Y)
+       // {
+       //     bool result = false;
+       //     int j = figures.Count - 1;
+       //     for (int i = 0; i < figures.Count; i++)
+       //     {
+       //         if ((((figures[i].Y <= mouse_Y) && (mouse_Y < figures[j].Y)) || ((figures[j].Y <= mouse_Y) && (mouse_Y < figures[i].Y))) &&
+       //(mouse_X > (figures[j].X - figures[i].X) * (mouse_Y - figures[i].Y) / (figures[j].Y - figures[i].Y) + figures[i].X))
+       //             result = !result;
+       //         j = i;
+       //     }
+       //     return result;
+       // }
+		bool IsinConvexHull(int mouse_X, int mouse_Y)
+		{
+			int i1, i2, S, S1, S2, S3;
+			bool flag = true;
+			for (int i = 0; i < figures.Count; i++)
+			{
+				flag = true;
+				i1 = i < figures.Count - 1 ? i + 1 : 0;
+				while (flag)
+				{
+					i2 = i1 + 1;
+					if (i2 >= figures.Count)
+						i2 = 0;
+					if (i2 == (i < figures.Count - 1 ? i + 1 : 0))
+						break;
+					S = Math.Abs(figures[i1].X * (figures[i2].Y - figures[i].Y) + figures[i2].X * (figures[i].Y - figures[i1].Y) + figures[i].X * (figures[i1].Y - figures[i2].Y));
+					S1 = Math.Abs(figures[i1].X * (figures[i2].Y - mouse_Y) + figures[i2].X * (mouse_Y - figures[i1].Y) + mouse_X * (figures[i1].Y - figures[i2].Y));
+					S2 = Math.Abs(figures[i].X * (figures[i2].Y - mouse_Y) + figures[i2].X * (mouse_Y - figures[i].Y) + mouse_X * (figures[i].Y - figures[i2].Y));
+					S3 = Math.Abs(figures[i1].X * (figures[i].Y - mouse_Y) + figures[i].X * (mouse_Y - figures[i1].Y) + mouse_X * (figures[i1].Y - figures[i].Y));
+					if (S == S1 + S2 + S3)
+					{
+						flag = true;
+						break;
+					}
+					i1 = i1 + 1;
+					if (i1 >= figures.Count)
+						i1 = 0;
+				}
+				if (flag == false)
+					break;
+			}
+			return flag;
+		}
+		private int Orientation(Shape p1, Shape p2, Shape p)
         {
             int Orin = (p2.X - p1.X) * (p.Y - p1.Y) - (p.X - p1.X) * (p2.Y - p1.Y);
             if (Orin > 0)
@@ -346,84 +379,99 @@ namespace Polygons
             while (vEndpoint != hull[0]);
             return hull;
         }
-        private void Form1_Paint(object sender, PaintEventArgs e)
-        {
-            foreach (Shape p1 in figures)
-            {
-                p1.Draw(e.Graphics);
-            }
-            #region ConvexHull_ByDefenition
-            if (byDefenitionToolStripMenuItem.Checked)
-            {
-                if (figures.Count >= 3)
-                {
-                    foreach (Shape p in figures)
-                        p.TOREMOVE = true;
-                    float k = 0, b = 0;
-                    int up, down;
-                    for (int i = 0; i < figures.Count; i++)
-                    {
-                        for (int j = i + 1; j < figures.Count; j++)
-                        {
-                            k = (float)(figures[i].Y - figures[j].Y) / (figures[i].X - figures[j].X);
-                            b = (float)(figures[j].Y - k * figures[j].X);
-                            up = 0;
-                            down = 0;
-                            for (int m = 0; m < figures.Count; m++)
-                            {
-                                if (m != i && m != j)
-                                {
-                                    if (figures[i].X != figures[j].X)
-                                    {
-                                        if (figures[m].X * k + b <= figures[m].Y)
-                                        {
-                                            up++;
-                                        }
-                                        if (figures[m].X * k + b > figures[m].Y)
-                                        {
-                                            down++;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        if (figures[m].X < figures[i].X)
-                                        {
-                                            up++;
-                                        }
-                                        if (figures[m].X > figures[i].X)
-                                        {
-                                            down++;
-                                        }
-                                    }
-                                }
-                            }
-                            if (up == 0 || down == 0)
-                            {
-                                figures[i].TOREMOVE = false;
-                                figures[j].TOREMOVE = false;
-                                e.Graphics.DrawLine(new Pen(Color.Black), figures[j].X, figures[j].Y, figures[i].X, figures[i].Y);
-                            }
-                        }
-                    }
-                }
-            }
-            #endregion
-            #region ConvexHull_ByJarvis
-            if (byJarvisToolStripMenuItem.Checked)
-            {
-                if (figures.Count >= 3)
-                {
-                    //figures = ConvexHull_Main(figures);
-                    e.Graphics.DrawLine(new Pen(Color.Black), figures[0].X, figures[0].Y, figures[figures.Count - 1].X, figures[figures.Count - 1].Y);
-                    for (int i = 0; i < figures.Count - 1; i++)
-                    {
-                        e.Graphics.DrawLine(new Pen(Color.Black), figures[i].X, figures[i].Y, figures[i + 1].X, figures[i + 1].Y);
-                    }
-                }
+		public double Cos(int x1, int y1, int x2, int y2, int x3, int y3)
+		{
+			double cos;
+			int xa, xb, ya, yb;
+			xa = x2 - x1;
+			ya = y2 - y1;
+			xb = x3 - x1;
+			yb = y3 - y1;
+			cos = (float)Math.Sqrt(xa * xa + ya * ya) * (float)Math.Sqrt(xb * xb + yb * yb);
+			cos = (float)((xa * xb) + (ya * yb)) / cos;
 
-            }
-            #endregion
-        }
+
+
+			return cos;
+		}
+		private void Form1_Paint(object sender, PaintEventArgs e)
+		{
+			foreach (Shape p1 in figures)
+			{
+				p1.Draw(e.Graphics);
+			}
+			#region ConvexHull_ByDefenition
+			if (byDefenitionToolStripMenuItem.Checked)
+			{
+				if (figures.Count >= 3)
+				{
+					foreach (Shape p in figures)
+						p.TOREMOVE = true;
+					float k = 0, b = 0;
+					int up, down;
+					for (int i = 0; i < figures.Count; i++)
+					{
+						for (int j = i + 1; j < figures.Count; j++)
+						{
+							k = (float)(figures[i].Y - figures[j].Y) / (figures[i].X - figures[j].X);
+							b = (float)(figures[j].Y - k * figures[j].X);
+							up = 0;
+							down = 0;
+							for (int m = 0; m < figures.Count; m++)
+							{
+								if (m != i && m != j)
+								{
+									if (figures[i].X != figures[j].X)
+									{
+										if (figures[m].X * k + b <= figures[m].Y)
+										{
+											up++;
+										}
+										if (figures[m].X * k + b > figures[m].Y)
+										{
+											down++;
+										}
+									}
+									else
+									{
+										if (figures[m].X < figures[i].X)
+										{
+											up++;
+										}
+										if (figures[m].X > figures[i].X)
+										{
+											down++;
+										}
+									}
+								}
+							}
+							if (up == 0 || down == 0)
+							{
+								figures[i].TOREMOVE = false;
+								figures[j].TOREMOVE = false;
+								e.Graphics.DrawLine(new Pen(Color.Black), figures[j].X, figures[j].Y, figures[i].X, figures[i].Y);
+							}
+						}
+					}
+				}
+			}
+			#endregion
+			#region ConvexHull_ByJarvis
+			if (byJarvisToolStripMenuItem.Checked)
+			{
+				if (figures.Count >= 3)
+				{
+					figures = ConvexHull_Main(figures);
+					e.Graphics.DrawLine(new Pen(Color.Black), figures[0].X, figures[0].Y, figures[figures.Count - 1].X, figures[figures.Count - 1].Y);
+					for (int i = 0; i < figures.Count - 1; i++)
+					{
+						e.Graphics.DrawLine(new Pen(Color.Black), figures[i].X, figures[i].Y, figures[i + 1].X, figures[i + 1].Y);
+					}
+
+				}
+			}
+			#endregion
+		}
         private void byDefenitionToolStripMenuItem_Click(object sender, EventArgs e)
         {
             byJarvisToolStripMenuItem.Checked = false;
