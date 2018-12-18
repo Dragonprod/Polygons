@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using System.Diagnostics;
 using System.Windows.Forms;
 using System.IO;
 using System.Xml;
@@ -29,6 +30,16 @@ namespace Polygons
         OpenFileDialog openD;
         BinaryFormatter binFormat = new BinaryFormatter();
         Stream stream;
+		Stopwatch timer = new Stopwatch();
+		TimeSpan ts;
+
+		void AutoGen()
+		{
+			for(int i = 0; i<10000000; i++)
+			{
+				figures.Add(new Circle(rnd.Next(0, ClientSize.Width), rnd.Next(0, ClientSize.Height)));
+			}
+		}
         public Form1()
         {
             InitializeComponent();
@@ -42,6 +53,7 @@ namespace Polygons
         {
 			bool IsMove = false;
             _x = e.X; _y = e.Y;
+			
             foreach (Shape p in figures.ToArray())
             {
                 if (p.IsInside(e.X, e.Y))
@@ -56,7 +68,8 @@ namespace Polygons
                         p.FLAG = true;
                     }
             }
-            if (e.Button == MouseButtons.Right)
+			if (e.Button == MouseButtons.Middle) { AutoGen(); Refresh(); }
+			if (e.Button == MouseButtons.Right)
             {
                 for (int i = figures.Count - 1; i >= 0; i--)
                 {
@@ -110,7 +123,6 @@ namespace Polygons
                         }
                     }
             }
-            Log(DateTime.Now.ToString() + ": EVENT MOUSE_DOWN");
         }
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -131,7 +143,6 @@ namespace Polygons
             }
             _x = e.X;
             _y = e.Y;
-            Log(DateTime.Now.ToString() + ": EVENT MOUSE_MOVE");
         }
         private void Form1_MouseUp(object sender, MouseEventArgs e)
         {
@@ -379,21 +390,7 @@ namespace Polygons
             while (vEndpoint != hull[0]);
             return hull;
         }
-		public double Cos(int x1, int y1, int x2, int y2, int x3, int y3)
-		{
-			double cos;
-			int xa, xb, ya, yb;
-			xa = x2 - x1;
-			ya = y2 - y1;
-			xb = x3 - x1;
-			yb = y3 - y1;
-			cos = (float)Math.Sqrt(xa * xa + ya * ya) * (float)Math.Sqrt(xb * xb + yb * yb);
-			cos = (float)((xa * xb) + (ya * yb)) / cos;
 
-
-
-			return cos;
-		}
 		private void Form1_Paint(object sender, PaintEventArgs e)
 		{
 			foreach (Shape p1 in figures)
@@ -403,8 +400,10 @@ namespace Polygons
 			#region ConvexHull_ByDefenition
 			if (byDefenitionToolStripMenuItem.Checked)
 			{
+				int n = 500;
 				if (figures.Count >= 3)
 				{
+					timer.Start();
 					foreach (Shape p in figures)
 						p.TOREMOVE = true;
 					float k = 0, b = 0;
@@ -453,6 +452,9 @@ namespace Polygons
 							}
 						}
 					}
+					timer.Stop();
+					ts = timer.Elapsed;
+					Log("DEFENITON FOR " + n + " OBJ " + Convert.ToString((float)ts.Ticks / (Stopwatch.Frequency / 1000)));
 				}
 			}
 			#endregion
@@ -461,13 +463,17 @@ namespace Polygons
 			{
 				if (figures.Count >= 3)
 				{
+					int n = 500;
+					timer.Start();
 					figures = ConvexHull_Main(figures);
 					e.Graphics.DrawLine(new Pen(Color.Black), figures[0].X, figures[0].Y, figures[figures.Count - 1].X, figures[figures.Count - 1].Y);
 					for (int i = 0; i < figures.Count - 1; i++)
 					{
 						e.Graphics.DrawLine(new Pen(Color.Black), figures[i].X, figures[i].Y, figures[i + 1].X, figures[i + 1].Y);
 					}
-
+					timer.Stop();
+					ts = timer.Elapsed;
+					Log("Jarvis FOR " + n + " OBJ " + Convert.ToString((float)ts.Ticks / (Stopwatch.Frequency / 1000)));
 				}
 			}
 			#endregion
