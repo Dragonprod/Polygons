@@ -35,7 +35,7 @@ namespace Polygons
 
 		void AutoGen()
 		{
-			for(int i = 0; i<10000000; i++)
+			for(int i = 0; i<500; i++)
 			{
 				figures.Add(new Circle(rnd.Next(0, ClientSize.Width), rnd.Next(0, ClientSize.Height)));
 			}
@@ -128,7 +128,8 @@ namespace Polygons
         {
             figures.Add(new Circle(ClientSize.Width / 2, ClientSize.Height / 2));
             Refresh();
-            Log(DateTime.Now.ToString() + ": LOAD: Default circle add");
+			Log(DateTime.Now.ToString() + ": LOAD: New test");
+			Log(DateTime.Now.ToString() + ": LOAD: Default circle add");
         }
         private void Form1_MouseMove(object sender, MouseEventArgs e)
         {
@@ -400,7 +401,6 @@ namespace Polygons
 			#region ConvexHull_ByDefenition
 			if (byDefenitionToolStripMenuItem.Checked)
 			{
-				int n = 500;
 				if (figures.Count >= 3)
 				{
 					timer.Start();
@@ -454,7 +454,8 @@ namespace Polygons
 					}
 					timer.Stop();
 					ts = timer.Elapsed;
-					Log("DEFENITON FOR " + n + " OBJ " + Convert.ToString((float)ts.Ticks / (Stopwatch.Frequency / 1000)));
+					Log("DEFENITON FOR " + figures.Count + " OBJ " + Convert.ToString((float)ts.Ticks / (Stopwatch.Frequency / 1000)));
+					timer.Reset();
 				}
 			}
 			#endregion
@@ -463,7 +464,6 @@ namespace Polygons
 			{
 				if (figures.Count >= 3)
 				{
-					int n = 500;
 					timer.Start();
 					figures = ConvexHull_Main(figures);
 					e.Graphics.DrawLine(new Pen(Color.Black), figures[0].X, figures[0].Y, figures[figures.Count - 1].X, figures[figures.Count - 1].Y);
@@ -473,7 +473,8 @@ namespace Polygons
 					}
 					timer.Stop();
 					ts = timer.Elapsed;
-					Log("Jarvis FOR " + n + " OBJ " + Convert.ToString((float)ts.Ticks / (Stopwatch.Frequency / 1000)));
+					Log("Jarvis FOR " + figures.Count + " OBJ " + Convert.ToString((float)ts.Ticks / (Stopwatch.Frequency / 1000)));
+					timer.Reset();
 				}
 			}
 			#endregion
