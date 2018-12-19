@@ -35,7 +35,7 @@ namespace Polygons
 
 		void AutoGen()
 		{
-			for(int i = 0; i<500; i++)
+			for(int i = 0; i< 10000; i++)
 			{
 				figures.Add(new Circle(rnd.Next(0, ClientSize.Width), rnd.Next(0, ClientSize.Height)));
 			}
@@ -130,7 +130,8 @@ namespace Polygons
             Refresh();
 			Log(DateTime.Now.ToString() + ": LOAD: New test");
 			Log(DateTime.Now.ToString() + ": LOAD: Default circle add");
-        }
+			timer.Reset();
+		}
         private void Form1_MouseMove(object sender, MouseEventArgs e)
         {
             foreach (Shape p1 in figures)
@@ -402,9 +403,10 @@ namespace Polygons
 			if (byDefenitionToolStripMenuItem.Checked)
 			{
 				timer.Reset();
+				timer.Start();
 				if (figures.Count >= 3)
 				{
-					timer.Start();
+					
 					foreach (Shape p in figures)
 						p.TOREMOVE = true;
 					float k = 0, b = 0;
@@ -453,31 +455,31 @@ namespace Polygons
 							}
 						}
 					}
-					timer.Stop();
-					ts = timer.Elapsed;
-					Log("DEFENITON FOR " + figures.Count + " OBJ " + Convert.ToString((float)ts.Ticks / (Stopwatch.Frequency / 1000)));
-					timer.Reset();
+					
 				}
+				timer.Stop();
+				ts = timer.Elapsed;
+				Log("DEFENITON FOR " + figures.Count + " OBJ " + +(float)ts.TotalMilliseconds);
+				timer.Reset();
 			}
 			#endregion
 			#region ConvexHull_ByJarvis
 			if (byJarvisToolStripMenuItem.Checked)
 			{
-				timer.Reset();
+				timer.Start();
 				if (figures.Count >= 3)
 				{
-					timer.Start();
 					figures = ConvexHull_Main(figures);
 					e.Graphics.DrawLine(new Pen(Color.Black), figures[0].X, figures[0].Y, figures[figures.Count - 1].X, figures[figures.Count - 1].Y);
 					for (int i = 0; i < figures.Count - 1; i++)
 					{
 						e.Graphics.DrawLine(new Pen(Color.Black), figures[i].X, figures[i].Y, figures[i + 1].X, figures[i + 1].Y);
 					}
-					timer.Stop();
-					ts = timer.Elapsed;
-					Log("Jarvis FOR " + figures.Count + " OBJ " + Convert.ToString((float)ts.Ticks / (Stopwatch.Frequency / 1000)));
-					timer.Reset();
 				}
+				timer.Stop();
+				ts = timer.Elapsed;
+				Log("Jarvis FOR " + figures.Count + " OBJ " + (float)ts.TotalMilliseconds);
+				timer.Reset();
 			}
 			#endregion
 		}
