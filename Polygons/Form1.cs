@@ -401,6 +401,7 @@ namespace Polygons
 			#region ConvexHull_ByDefenition
 			if (byDefenitionToolStripMenuItem.Checked)
 			{
+				timer.Reset();
 				if (figures.Count >= 3)
 				{
 					timer.Start();
@@ -462,6 +463,7 @@ namespace Polygons
 			#region ConvexHull_ByJarvis
 			if (byJarvisToolStripMenuItem.Checked)
 			{
+				timer.Reset();
 				if (figures.Count >= 3)
 				{
 					timer.Start();
