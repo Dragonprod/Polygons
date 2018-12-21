@@ -102,15 +102,15 @@ namespace Polygons
 					Refresh();
 				}
 			}
-			//pre-load for ConvexHull
-			if (byJarvisToolStripMenuItem.Checked)
-			{
-				if (figures.Count >= 3)
+			//pre - load for ConvexHull
+  			if (byJarvisToolStripMenuItem.Checked)
 				{
-					figures = ConvexHull_Main(figures);
-					Refresh();
+					if (figures.Count >= 3)
+					{
+						figures = ConvexHull_Main(figures);
+						Refresh();
+					}
 				}
-			}
 			for (int i = 0; i < figures.Count; i++)
 			{
 				if (byDefenitionToolStripMenuItem.Checked)
@@ -392,13 +392,6 @@ namespace Polygons
 			while (vEndpoint != hull[0]);
 			return hull;
 		}
-		private double Cosinus(int x1, int y1, int x2, int y2, int x3, int y3)
-		{
-			return ((x2 - x1) * (x3 - x1) + (y2 - y1) * (y3 - y1)) /
-			(Math.Sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)) *
-			Math.Sqrt((x3 - x1) * (x3 - x1) + (y3 - y1) * (y3 - y1)));
-
-		}
 		private void Form1_Paint(object sender, PaintEventArgs e)
 		{
 			foreach (Shape p1 in figures)
@@ -486,10 +479,10 @@ namespace Polygons
 				ts = timer.Elapsed;
 				Log("Jarvis FOR " + figures.Count + " OBJ " + (float)ts.TotalMilliseconds);
 				timer.Reset();
+
 			}
-			#endregion
+				#endregion
 		}
-			
 		private void byDefenitionToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			byJarvisToolStripMenuItem.Checked = false;
@@ -569,7 +562,6 @@ namespace Polygons
 			MessageBox.Show("Undo " + F_Undo.Count.ToString());
 			Refresh();
 		}
-
 		private void redoToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			if (figures.Count < 1)
@@ -594,165 +586,11 @@ namespace Polygons
 				p.Y = p.Y + rnd.Next(-1, 2);
 				Refresh();
 			}
-			Refresh();
 		}
 		private void Form1_Resize(object sender, EventArgs e)
 		{
-			Refresh();
+
 		}
-
-
-		//int _TEST = 0;
-
-		//			foreach (Shape sh in L) 
-		//			{ if (sh.Y == a1.Y) _TEST++; } 
-		//			if(_TEST>1)
-		//			foreach (Shape sh in shapes)
-		//			{
-		//				if (sh.Y == y1) 
-		//					if (sh.X < x) { x = sh.X; a1 = sh; }
-		//			}
-
-		//			//максимальный косинус 
-		//			foreach (Shape sh in shapes)
-		//			{
-		//				if (sh.X != a1.X && sh.Y != a1.Y)
-		//				{
-		//					if (Cos(a1.X, a1.Y, sh.X, sh.Y, sh.X, a1.Y) >= cos)
-		//					{
-		//						cos =
-		//						Cos(a1.X, a1.Y, sh.X, sh.Y, sh.X, a1.Y); a2 = sh;
-		//					}
-		//				}
-
-		//			}
-		//			//минимальный косинус - находим вторую точку 
-		//			if (cos == -2)
-		//			{
-		//				cos = 2;
-		//				foreach (Shape sh in shapes)
-		//				{
-		//					if (sh.X != a1.X && sh.Y != a1.Y)
-		//					{
-		//						if (Cos(a1.X, a1.Y, sh.X, sh.Y, sh.X, a1.Y) <= cos)
-		//						{
-		//							cos =
-		//							Cos(a1.X, a1.Y, sh.X, sh.Y, sh.X, a1.Y); a2 = sh;
-
-		//						}
-		//					}
-
-		//				}
-		//			}
-		//			//рисуем линию между первой и второй точками 
-		//			e.Graphics.DrawLine(new Pen(Color.Black), a1.X, a1.Y, a2.X, a2.Y);
-		//			a1.Obl = true;
-		//			a2.Obl = true;
-		//			//задаем последнюю точку для условия 
-		//			a4 = a1;
-		//			do
-		//			{
-		//				cos = 2;
-		//				a3 = a1;
-		//				a1 = a2;
-		//				foreach (Shape sh in shapes)
-		//				{
-		//					if (sh.X != a1.X && sh.Y != a1.Y && sh.X != a3.X && sh.Y != a3.Y)
-		//					{
-		//						if (Cos(a1.X, a1.Y, sh.X, sh.Y, a3.X, a3.Y) <= cos)
-		//						{
-
-		//							cos =
-		//							Cos(a1.X, a1.Y, sh.X, sh.Y, a3.X, a3.Y); a2 = sh;
-		//						}
-		//					}
-
-		//				}
-		//				e.Graphics.DrawLine(new Pen(Color.Black), a1.X, a1.Y, a2.X, a2.Y);
-		//				a1.Obl = true;
-		//				a2.Obl = true;
-
-		//			}
-		//			while (a2 != a4);
-		//		}
-
-		//ymax = 0; 
-		//xmin = 10000; 
-		//int count = 0;
-
-
-		//		double cos = -2; ; 
-		//Shape A = new Circle(0, 0);
-		//		Shape B = new Circle(1, 1);
-		//		Shape M = new Circle(2, 2);
-		//		Shape Q = new Circle(3, 3); 
-		//foreach (Shape x in L) 
-		//{ x.F = false; } 
-
-
-		//foreach (Shape x in L) 
-		//{ if (x.Y > ymax) { A = x; ymax = x.Y; } } 
-		//foreach (Shape x in L) 
-		//{ if (x.Y == A.Y) count++; } 
-
-		//if (count > 1) 
-		//{ 
-		//foreach (Shape x in L) 
-		//{ 
-		//if (x.Y == ymax) 
-		//{ if (x.X<xmin) { xmin = x.X; A = x; } } 
-		//} 
-		//} 
-
-
-
-		//foreach (Shape x in L) 
-		//{ 
-		//if (x.X != A.X && x.Y != A.Y) 
-		//{ if (Cosinus(A.X, A.Y, x.X, x.Y, x.X, A.Y) >= cos) { cos = Cosinus(A.X, A.Y, x.X, x.Y, x.X, A.Y); B = x; } } 
-
-		//} 
-		//if (cos == -2) 
-		//{ 
-		//cos = 2; 
-		//foreach (Shape x in L) 
-		//{ 
-		//if (x.X != A.X && x.Y != A.Y) 
-		//{ if (Cosinus(A.X, A.Y, x.X, x.Y, x.X, A.Y) <= cos) { cos = Cosinus(A.X, A.Y, x.X, x.Y, x.X, A.Y); B = x; } } 
-
-		//} 
-		//} 
-
-		//e.Graphics.DrawLine(new Pen(Color.Black), A.X, A.Y, B.X, B.Y); 
-		//A.F = true; 
-		//B.F = true; 
-
-		//Q = A; 
-		//while (B!=Q) 
-		//{ 
-		//M = A; 
-		//A = B; 
-		//cos = 2; 
-
-		//foreach (Shape x in L) 
-		//{ 
-		//if (x.X != A.X && x.Y != A.Y&&x.X != M.X && x.Y != M.Y) 
-		//{ if (Cosinus(A.X, A.Y, x.X, x.Y, M.X, M.Y) <= cos) { cos = Cosinus(A.X, A.Y, x.X, x.Y, M.X, M.Y); B = x; } } 
-
-		//} 
-		//e.Graphics.DrawLine(new Pen(Color.Black), A.X, A.Y, B.X, B.Y); 
-		//A.F = true; 
-		//B.F = true; 
-
-		//} 
-		//} 
-		//break; 
-		//}
-
-
-
-
-
 	}
 }
 
@@ -761,16 +599,4 @@ namespace Polygons
 
 
 
-
-
-
-
-//	private void Многоугольники_MouseUp(object sender, MouseEventArgs e)
-//	{
-
-//if (shapes.Count > 3)
-//	for (int i = 0; i < shapes.Count; i++)
-//		if (shapes[i].Obl == false) { shapes.Remove(shapes[i]); i--; }
-
-//	}
 
