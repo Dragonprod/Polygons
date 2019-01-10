@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,7 +22,7 @@ namespace Polygons
 		List<Shape> figures = new List<Shape>();
 		Stack<List<Shape>> F_Undo = new Stack<List<Shape>>();
 		Stack<List<Shape>> F_Redo = new Stack<List<Shape>>();
-		int _x, _y, RadMem = 20, currentIndex = -1;
+		int _x, _y, RadMem = 20;
 		string FileName_get = null;
 		bool tmp_save_flag = true;
 		Form2 set_r;
@@ -30,8 +31,8 @@ namespace Polygons
 		OpenFileDialog openD;
 		BinaryFormatter binFormat = new BinaryFormatter();
 		Stream stream;
-		Stopwatch timer = new Stopwatch();
-		TimeSpan ts;
+		//Stopwatch timer = new Stopwatch();
+		//TimeSpan ts;
 
 		void AutoGen()
 		{
@@ -53,7 +54,6 @@ namespace Polygons
 		{
 			bool IsMove = false;
 			_x = e.X; _y = e.Y;
-
 			foreach (Shape p in figures.ToArray())
 			{
 				if (p.IsInside(e.X, e.Y))
@@ -68,7 +68,7 @@ namespace Polygons
 						p.FLAG = true;
 					}
 			}
-			if (e.Button == MouseButtons.Middle) { AutoGen(); Refresh(); }
+			//if (e.Button == MouseButtons.Middle) { AutoGen(); Refresh(); }
 			if (e.Button == MouseButtons.Right)
 			{
 				for (int i = figures.Count - 1; i >= 0; i--)
@@ -102,15 +102,15 @@ namespace Polygons
 					Refresh();
 				}
 			}
-			//pre - load for ConvexHull
-  			if (byJarvisToolStripMenuItem.Checked)
+			//pre-load for ConvexHull
+			if (byJarvisToolStripMenuItem.Checked)
+			{
+				if (figures.Count >= 3)
 				{
-					if (figures.Count >= 3)
-					{
-						figures = ConvexHull_Main(figures);
-						Refresh();
-					}
+					figures = ConvexHull_Main(figures);
+					Refresh();
 				}
+			}
 			for (int i = 0; i < figures.Count; i++)
 			{
 				if (byDefenitionToolStripMenuItem.Checked)
@@ -127,10 +127,7 @@ namespace Polygons
 		private void Form1_Load(object sender, EventArgs e)
 		{
 			figures.Add(new Circle(ClientSize.Width / 2, ClientSize.Height / 2));
-			Refresh();
-			Log(DateTime.Now.ToString() + ": LOAD: New test");
-			Log(DateTime.Now.ToString() + ": LOAD: Default circle add");
-			timer.Reset();
+			//timer.Reset();
 		}
 		private void Form1_MouseMove(object sender, MouseEventArgs e)
 		{
@@ -140,11 +137,11 @@ namespace Polygons
 				{
 					p1.X += e.X - _x;
 					p1.Y += e.Y - _y;
-					Refresh();
 				}
 			}
 			_x = e.X;
 			_y = e.Y;
+			Refresh();
 		}
 		private void Form1_MouseUp(object sender, MouseEventArgs e)
 		{
@@ -153,43 +150,27 @@ namespace Polygons
 				p1.FLAG = false;
 				p1.REMOVE = false;
 			}
-			for (int i = 0; i < figures.Count; i++)
-			{
-				if (byDefenitionToolStripMenuItem.Checked)
-					if (figures.Count >= 3)
-					{
-						if (figures[i].TOREMOVE)
-						{
-							figures.Remove(figures[i]);
-							Refresh();
-						}
-					}
-			}
 			if (byJarvisToolStripMenuItem.Checked)
 				if (figures.Count >= 3)
 				{
 					figures = ConvexHull_Main(figures);
 					Refresh();
 				}
-			Log(DateTime.Now.ToString() + ": EVENT MOUSE_UP");
 		}
 		private void circleToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			triangleToolStripMenuItem1.Checked = false;
 			squareToolStripMenuItem1.Checked = false;
-			Log(DateTime.Now.ToString() + ": TYPE type changed, new type - circle");
 		}
 		private void triangleToolStripMenuItem1_Click(object sender, EventArgs e)
 		{
 			circleToolStripMenuItem.Checked = false;
 			squareToolStripMenuItem1.Checked = false;
-			Log(DateTime.Now.ToString() + ": TYPE type changed, new type - triangle");
 		}
 		private void squareToolStripMenuItem1_Click(object sender, EventArgs e)
 		{
 			triangleToolStripMenuItem1.Checked = false;
 			circleToolStripMenuItem.Checked = false;
-			Log(DateTime.Now.ToString() + ": TYPE type changed, new type - square");
 		}
 		private void newToolStripMenuItem_Click(object sender, EventArgs e)
 		{
@@ -212,7 +193,6 @@ namespace Polygons
 			catch (ArgumentException)
 			{
 				MessageBox.Show("Error: name must be set", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				Log(DateTime.Now.ToString() + ": Save error(ArgumentException");
 			}
 		}
 		private void saveToolStripMenuItem_Click(object sender, EventArgs e)
@@ -232,7 +212,6 @@ namespace Polygons
 				stream = File.OpenWrite(FileName_get);
 				FileName_get = saveD.FileName;
 				binFormat.Serialize(stream, figures);
-				Log(DateTime.Now.ToString() + ": Save succes");
 				stream.Close();
 
 			}
@@ -243,7 +222,6 @@ namespace Polygons
 			catch (ArgumentException)
 			{
 				MessageBox.Show("Error: name must be set", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				Log(DateTime.Now.ToString() + ": Save error(ArgumentException)");
 			}
 		}
 		private void loadToolStripMenuItem_Click(object sender, EventArgs e)
@@ -259,7 +237,6 @@ namespace Polygons
 				figures = (List<Shape>)binFormat.Deserialize(stream);
 				Refresh();
 				stream.Close();
-				Log(DateTime.Now.ToString() + ": Load succes");
 			}
 			catch (InvalidOperationException)
 			{
@@ -268,7 +245,6 @@ namespace Polygons
 			catch (ArgumentException)
 			{
 				MessageBox.Show("Error: name must be set", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				Log(DateTime.Now.ToString() + ": Save error(ArgumentException");
 			}
 		}
 		private void radiusToolStripMenuItem_Click(object sender, EventArgs e)
@@ -281,18 +257,19 @@ namespace Polygons
 				set_r.Show();
 			}
 			else set_r.Activate();
-			set_r.RadiusChanged += Set_r_RadiusChanged;
+			set_r.RC += Set_r_RC;
 		}
-		private void Set_r_RadiusChanged(object sender, EventArgs e)
+
+		private void Set_r_RC(object sender, RadiusEventArgs e)
 		{
 			foreach (Shape p in figures)
 			{
-				p.RADIUS = set_r.Radius;
+				p.RADIUS = e.Radius;
 				Refresh();
 			}
-			Log(DateTime.Now.ToString() + ": RADIUS radius changed, new radius - " + set_r.Radius.ToString());
-			RadMem = set_r.Radius;
+			RadMem = e.Radius;
 		}
+
 		private void insideToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			colorDialog1.ShowDialog();
@@ -301,7 +278,6 @@ namespace Polygons
 				p1.COL = colorDialog1.Color;
 				Refresh();
 			}
-			Log(DateTime.Now.ToString() + ": COLOR inside color changed, new color:" + colorDialog1.Color.ToString());
 		}
 		private void outsideToolStripMenuItem_Click(object sender, EventArgs e)
 		{
@@ -311,7 +287,6 @@ namespace Polygons
 				p1.PEN = colorDialog1.Color;
 				Refresh();
 			}
-			Log(DateTime.Now.ToString() + ": COLOR outside color changed, new color:" + colorDialog1.Color.ToString());
 		}
 		bool IsinConvexHull(int mouse_X, int mouse_Y)
 		{
@@ -326,39 +301,6 @@ namespace Polygons
 			}
 			return result;
 		}
-		//bool IsinConvexHull(int mouse_X, int mouse_Y)
-		//{
-		//	int i1, i2, S, S1, S2, S3;
-		//	bool flag = true;
-		//	for (int i = 0; i < figures.Count; i++)
-		//	{
-		//		flag = true;
-		//		i1 = i < figures.Count - 1 ? i + 1 : 0;
-		//		while (flag)
-		//		{
-		//			i2 = i1 + 1;
-		//			if (i2 >= figures.Count)
-		//				i2 = 0;
-		//			if (i2 == (i < figures.Count - 1 ? i + 1 : 0))
-		//				break;
-		//			S = Math.Abs(figures[i1].X * (figures[i2].Y - figures[i].Y) + figures[i2].X * (figures[i].Y - figures[i1].Y) + figures[i].X * (figures[i1].Y - figures[i2].Y));
-		//			S1 = Math.Abs(figures[i1].X * (figures[i2].Y - mouse_Y) + figures[i2].X * (mouse_Y - figures[i1].Y) + mouse_X * (figures[i1].Y - figures[i2].Y));
-		//			S2 = Math.Abs(figures[i].X * (figures[i2].Y - mouse_Y) + figures[i2].X * (mouse_Y - figures[i].Y) + mouse_X * (figures[i].Y - figures[i2].Y));
-		//			S3 = Math.Abs(figures[i1].X * (figures[i].Y - mouse_Y) + figures[i].X * (mouse_Y - figures[i1].Y) + mouse_X * (figures[i1].Y - figures[i].Y));
-		//			if (S == S1 + S2 + S3)
-		//			{
-		//				flag = true;
-		//				break;
-		//			}
-		//			i1 = i1 + 1;
-		//			if (i1 >= figures.Count)
-		//				i1 = 0;
-		//		}
-		//		if (flag == false)
-		//			break;
-		//	}
-		//	return flag;
-		//}
 		private int Orientation(Shape p1, Shape p2, Shape p)
 		{
 			int Orin = (p2.X - p1.X) * (p.Y - p1.Y) - (p.X - p1.X) * (p2.Y - p1.Y);
@@ -392,8 +334,17 @@ namespace Polygons
 			while (vEndpoint != hull[0]);
 			return hull;
 		}
+		private double Cosinus(int x1, int y1, int x2, int y2, int x3, int y3)
+		{
+			return ((x2 - x1) * (x3 - x1) + (y2 - y1) * (y3 - y1)) /
+			(Math.Sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)) *
+			Math.Sqrt((x3 - x1) * (x3 - x1) + (y3 - y1) * (y3 - y1)));
+
+		}
 		private void Form1_Paint(object sender, PaintEventArgs e)
 		{
+			Graphics gr = e.Graphics;
+			gr.SmoothingMode = SmoothingMode.HighQuality;
 			foreach (Shape p1 in figures)
 			{
 				p1.Draw(e.Graphics);
@@ -401,8 +352,8 @@ namespace Polygons
 			#region ConvexHull_ByDefenition
 			if (byDefenitionToolStripMenuItem.Checked)
 			{
-				timer.Reset();
-				timer.Start();
+				//timer.Reset();
+				//timer.Start();
 				if (figures.Count >= 3)
 				{
 
@@ -456,16 +407,16 @@ namespace Polygons
 					}
 
 				}
-				timer.Stop();
-				ts = timer.Elapsed;
-				Log("DEFENITON FOR " + figures.Count + " OBJ " + +(float)ts.TotalMilliseconds);
-				timer.Reset();
+				//timer.Stop();
+				//ts = timer.Elapsed;
+				//Log("DEFENITON FOR " + figures.Count + " OBJ " + +(float)ts.TotalMilliseconds);
+				//timer.Reset();
 			}
 			#endregion
 			#region ConvexHull_ByJarvis
 			if (byJarvisToolStripMenuItem.Checked)
 			{
-				timer.Start();
+				//timer.Start();
 				if (figures.Count >= 3)
 				{
 					figures = ConvexHull_Main(figures);
@@ -475,18 +426,17 @@ namespace Polygons
 						e.Graphics.DrawLine(new Pen(Color.Black), figures[i].X, figures[i].Y, figures[i + 1].X, figures[i + 1].Y);
 					}
 				}
-				timer.Stop();
-				ts = timer.Elapsed;
-				Log("Jarvis FOR " + figures.Count + " OBJ " + (float)ts.TotalMilliseconds);
-				timer.Reset();
-
+				//timer.Stop();
+				//ts = timer.Elapsed;
+				//Log("Jarvis FOR " + figures.Count + " OBJ " + (float)ts.TotalMilliseconds);
+				//timer.Reset();
 			}
-				#endregion
+			#endregion
 		}
+
 		private void byDefenitionToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			byJarvisToolStripMenuItem.Checked = false;
-			Log(DateTime.Now.ToString() + ": CONVEXHULL Succes by Defenition");
 			Refresh();
 		}
 		private void byJarvisToolStripMenuItem_Click(object sender, EventArgs e)
@@ -495,7 +445,6 @@ namespace Polygons
 			if (figures.Count >= 3)
 			{
 				figures = ConvexHull_Main(figures);
-				Log(DateTime.Now.ToString() + ": CONVEXHULL Succes by Jarvis");
 				Refresh();
 			}
 		}
@@ -506,27 +455,25 @@ namespace Polygons
 				if (int.Parse(textBox1.Text) <= 0) throw new IndexOutOfRangeException();
 				timer1.Interval = int.Parse(textBox1.Text);
 				timer1.Enabled = true;
-				Log(DateTime.Now.ToString() + "ANIMATION Timer enavled");
 			}
 			catch (FormatException)
 			{
 				textBox1.Text = null;
 				timer1.Enabled = false;
 				MessageBox.Show("Error: Only numbers\nInterval must be set", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				Log(DateTime.Now.ToString() + ": ANIMATION Error: Only numbers\nInterval must be set");
+
 			}
 			catch (IndexOutOfRangeException)
 			{
 				textBox1.Text = null;
 				timer1.Enabled = false;
 				MessageBox.Show("Error: Interval must be > or = 0", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				Log(DateTime.Now.ToString() + ": ANIMATION Error: Interval must be > or = 0");
 			}
 		}
 		private void button2_Click(object sender, EventArgs e)
 		{
 			timer1.Enabled = false;
-			Log(DateTime.Now.ToString() + "ANIMATION Timer disabled");
+
 		}
 		private void textBox1_TextChanged(object sender, EventArgs e)
 		{
@@ -540,14 +487,14 @@ namespace Polygons
 				textBox1.Text = null;
 				timer1.Enabled = false;
 				MessageBox.Show("Error: Only numbers\nInterval must be set", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				Log(DateTime.Now.ToString() + ": ANIMATION Error: Only numbers\nInterval must be set");
+
 			}
 			catch (IndexOutOfRangeException)
 			{
 				textBox1.Text = null;
 				timer1.Enabled = false;
 				MessageBox.Show("Error: Interval must be > or = 0", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				Log(DateTime.Now.ToString() + ": ANIMATION Error: Interval must be > or = 0");
+
 			}
 		}
 		#region UNDO_REDO
@@ -562,6 +509,7 @@ namespace Polygons
 			MessageBox.Show("Undo " + F_Undo.Count.ToString());
 			Refresh();
 		}
+
 		private void redoToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			if (figures.Count < 1)
@@ -578,25 +526,13 @@ namespace Polygons
 				if (figures.Count >= 3)
 				{
 					figures = ConvexHull_Main(figures);
-					Refresh();
 				}
 			foreach (Shape p in figures)
 			{
 				p.X = p.X + rnd.Next(-1, 2);
 				p.Y = p.Y + rnd.Next(-1, 2);
-				Refresh();
 			}
-		}
-		private void Form1_Resize(object sender, EventArgs e)
-		{
-
+			Refresh();
 		}
 	}
 }
-
-
-
-
-
-
-

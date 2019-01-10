@@ -18,7 +18,7 @@ namespace Polygons
     [XmlInclude(typeof(Rectangl))]
     public abstract class Shape
     {
-        protected static Color col, pen;
+		protected static Color col, pen;
         protected static int radius;
         protected int x, y;
         protected bool flag, remove, ToRemove;
@@ -81,6 +81,7 @@ namespace Polygons
             pen = Color.Green;
             radius = 20;
         }
+
         //public abstract void Undo(Shape p);
         //public abstract void Redo(Shape p);
         public abstract void Draw(Graphics gr);

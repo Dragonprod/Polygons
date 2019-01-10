@@ -13,37 +13,21 @@ namespace Polygons
     
     public partial class Form2 : Form
     {
-        public Form2()
+		public Form2()
+		{
+			InitializeComponent();
+		}
+		public event RadiusEventHandler RC;
+
+		public void RadMem(int Rm)
+		{
+			trackBar1.Value = Rm;
+		}
+		private void trackBar1_ValueChanged(object sender, EventArgs e)
         {
-            InitializeComponent();
-            trackBar1.ValueChanged += trackBar1_ValueChanged;
-        }
-        public int Radius
-        {
-            get { return trackBar1.Value; }
-            protected set
-            {
-                if (value == trackBar1.Value)
-                {
-                    return;
-                }
-                trackBar1.Value = value;
-                OnRadiusChanged();
-            }
-        }
-        public void RadMem(int Rm)
-        {
-            trackBar1.Value = Rm;
-        }
-        public event EventHandler RadiusChanged;
-        protected void OnRadiusChanged()
-        {
-            RadiusChanged?.Invoke(this, EventArgs.Empty);
-        }
-        private void trackBar1_ValueChanged(object sender, EventArgs e)
-        {
-            OnRadiusChanged();
-        }
+			if (RC != null)
+				RC(this, new RadiusEventArgs(trackBar1.Value));
+		}
 
     }
 }

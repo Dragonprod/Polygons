@@ -26,3 +26,4 @@ Z:\ООП\Polygons\Polygons\Polygons\obj\Debug\Polygons.Form1.resources
 Z:\ООП\Polygons\Polygons\Polygons\obj\Debug\Polygons.Properties.Resources.resources
 Z:\ООП\Polygons\Polygons\Polygons\obj\Debug\Polygons.csproj.GenerateResource.Cache
 D:\oop\10 класс\Polygons\Polygons\obj\Debug\Polygons.Form2.resources
+D:\OOP\10 класс\Polygons\Polygons\obj\Debug\Polygons.csproj.ResolveComReference.cache
