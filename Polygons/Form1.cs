@@ -111,17 +111,14 @@ namespace Polygons
 					Refresh();
 				}
 			}
-			for (int i = 0; i < figures.Count; i++)
+			if (byDefenitionToolStripMenuItem.Checked)
 			{
-				if (byDefenitionToolStripMenuItem.Checked)
-					if (figures.Count >= 3)
-					{
-						if (figures[i].TOREMOVE)
-						{
-							figures.Remove(figures[i]);
-							Refresh();
-						}
-					}
+				for (int i = 0; i < figures.Count; i++)
+				{
+					if (figures[i].TOREMOVE)
+						figures.Remove(figures[i]);
+					Refresh();
+				}
 			}
 		}
 		private void Form1_Load(object sender, EventArgs e)
@@ -150,12 +147,16 @@ namespace Polygons
 				p1.FLAG = false;
 				p1.REMOVE = false;
 			}
-			if (byJarvisToolStripMenuItem.Checked)
-				if (figures.Count >= 3)
+			if (byDefenitionToolStripMenuItem.Checked)
+			{
+				for (int i = 0; i < figures.Count; i++)
 				{
-					figures = ConvexHull_Main(figures);
+					if (figures[i].TOREMOVE)
+						figures.Remove(figures[i]);
 					Refresh();
 				}
+			}
+
 		}
 		private void circleToolStripMenuItem_Click(object sender, EventArgs e)
 		{
@@ -252,14 +253,12 @@ namespace Polygons
 			if (set_r == null || set_r.IsDisposed)
 			{
 				set_r = new Form2();
-				set_r.Owner = this;
 				set_r.RadMem(RadMem);
 				set_r.Show();
 			}
 			else set_r.Activate();
 			set_r.RC += Set_r_RC;
 		}
-
 		private void Set_r_RC(object sender, RadiusEventArgs e)
 		{
 			foreach (Shape p in figures)
@@ -269,7 +268,6 @@ namespace Polygons
 			}
 			RadMem = e.Radius;
 		}
-
 		private void insideToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			colorDialog1.ShowDialog();
@@ -405,7 +403,6 @@ namespace Polygons
 							}
 						}
 					}
-
 				}
 				//timer.Stop();
 				//ts = timer.Elapsed;
@@ -433,11 +430,10 @@ namespace Polygons
 			}
 			#endregion
 		}
-
 		private void byDefenitionToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			byJarvisToolStripMenuItem.Checked = false;
-			Refresh();
+			//Refresh();
 		}
 		private void byJarvisToolStripMenuItem_Click(object sender, EventArgs e)
 		{
@@ -509,7 +505,6 @@ namespace Polygons
 			MessageBox.Show("Undo " + F_Undo.Count.ToString());
 			Refresh();
 		}
-
 		private void redoToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			if (figures.Count < 1)
