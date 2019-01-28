@@ -265,8 +265,9 @@ namespace Polygons
 				set_r = new Form2();
 				set_r.RadMem(RadMem);
 				set_r.Show();
+
 			}
-			else set_r.Activate();
+			else { set_r.Activate(); set_r.WindowState = FormWindowState.Normal; }
 			set_r.RC += Set_r_RC;
 		}
 		private void Set_r_RC(object sender, RadiusEventArgs e)
