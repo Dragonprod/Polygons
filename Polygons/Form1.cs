@@ -19,16 +19,15 @@ namespace Polygons
 {
 	public partial class Form1 : Form
 	{
+		bool unsaved = false;
 		List<Shape> figures = new List<Shape>();
 		Stack<List<Shape>> F_Undo = new Stack<List<Shape>>();
 		Stack<List<Shape>> F_Redo = new Stack<List<Shape>>();
 		int _x, _y, RadMem = 20;
-		string FileName_get = null;
-		bool tmp_save_flag = true;
+		string DefaultFileName = null;
+		string UserFileName = null;
 		Form2 set_r;
 		Random rnd = new Random();
-		SaveFileDialog saveD;
-		OpenFileDialog openD;
 		BinaryFormatter binFormat = new BinaryFormatter();
 		Stream stream;
 		//Stopwatch timer = new Stopwatch();
@@ -53,6 +52,8 @@ namespace Polygons
 		private void Form1_MouseDown(object sender, MouseEventArgs e)
 		{
 			bool IsMove = false;
+			unsaved = true;
+			if (unsaved) this.Text = "Polygons (unsaved)";
 			_x = e.X; _y = e.Y;
 			foreach (Shape p in figures.ToArray())
 			{
@@ -123,6 +124,7 @@ namespace Polygons
 		}
 		private void Form1_Load(object sender, EventArgs e)
 		{
+			DefaultFileName = "Polygons1.dat";
 			figures.Add(new Circle(ClientSize.Width / 2, ClientSize.Height / 2));
 			//timer.Reset();
 		}
@@ -177,41 +179,23 @@ namespace Polygons
 		{
 			try
 			{
-				saveD = new SaveFileDialog();
-				saveD.Filter = "All files (*.*)|*.*|data file *.dat|*.dat";
-				saveD.FilterIndex = 2;
-				saveD.ShowDialog();
 				figures.Clear();
-				FileName_get = saveD.FileName;
-				tmp_save_flag = false;
 				figures.Add(new Circle(ClientSize.Width / 2, ClientSize.Height / 2));
 				Refresh();
+				saveToolStripMenuItem_Click(null, null);
 			}
 			catch (InvalidOperationException)
 			{
 				Log(DateTime.Now.ToString() + ": Save error(InvalidOperationException)");
-			}
-			catch (ArgumentException)
-			{
-				MessageBox.Show("Error: name must be set", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
 		private void saveToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			try
 			{
-				saveD = new SaveFileDialog();
-				if (tmp_save_flag)
-					if (!saveD.CheckFileExists)
-					{
-						saveD.Filter = "All files (*.*)|*.*|data file *.dat|*.dat";
-						saveD.FilterIndex = 2;
-						saveD.ShowDialog();
-						FileName_get = saveD.FileName;
-						tmp_save_flag = false;
-					}
-				stream = File.OpenWrite(FileName_get);
-				FileName_get = saveD.FileName;
+				unsaved = false;
+				this.Text = "Polygons";
+				stream = File.OpenWrite(DefaultFileName);
 				binFormat.Serialize(stream, figures);
 				stream.Close();
 
@@ -219,6 +203,35 @@ namespace Polygons
 			catch (InvalidOperationException)
 			{
 				Log(DateTime.Now.ToString() + ": Save error(InvalidOperationException)");
+			}
+		}
+		private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			try
+			{
+				SaveFileDialog saveDialog = new SaveFileDialog();
+				
+				if (unsaved)
+				{
+					if(!saveDialog.CheckFileExists)
+					{
+						saveDialog.Filter = "All files (*.*)|*.*|data file *.dat|*.dat";
+						saveDialog.FilterIndex = 2;
+						saveDialog.ShowDialog();
+						UserFileName = saveDialog.FileName;
+						unsaved = false;
+						this.Text = "Polygons";
+					}
+				}
+				stream = File.OpenWrite(UserFileName);
+				binFormat.Serialize(stream, figures);
+				stream.Close();
+			}
+			catch (InvalidOperationException)
+			{
+				Log(DateTime.Now.ToString() + ": Save error(InvalidOperationException)");
+				MessageBox.Show("FATAL ERROR", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				Application.Exit();
 			}
 			catch (ArgumentException)
 			{
@@ -229,23 +242,20 @@ namespace Polygons
 		{
 			try
 			{
-				openD = new OpenFileDialog();
-				openD.Filter = "All files (*.*)|*.*|data file *.dat|*.dat";
-				openD.FilterIndex = 2;
-				openD.ShowDialog();
-				FileName_get = openD.FileName;
-				stream = File.OpenRead(FileName_get);
+				OpenFileDialog openDialog = new OpenFileDialog();
+				openDialog.Filter = "All files (*.*)|*.*|data file *.dat|*.dat";
+				openDialog.FilterIndex = 2;
+				openDialog.ShowDialog();
+				unsaved = false;
+				UserFileName = openDialog.FileName;
+				stream = File.OpenRead(UserFileName);
 				figures = (List<Shape>)binFormat.Deserialize(stream);
 				Refresh();
 				stream.Close();
 			}
 			catch (InvalidOperationException)
 			{
-				Log(DateTime.Now.ToString() + ": Save error(InvalidOperationException)");
-			}
-			catch (ArgumentException)
-			{
-				MessageBox.Show("Error: name must be set", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				Log(DateTime.Now.ToString() + ": Load error(InvalidOperationException)");
 			}
 		}
 		private void radiusToolStripMenuItem_Click(object sender, EventArgs e)
@@ -433,7 +443,7 @@ namespace Polygons
 		private void byDefenitionToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			byJarvisToolStripMenuItem.Checked = false;
-			//Refresh();
+			Refresh();
 		}
 		private void byJarvisToolStripMenuItem_Click(object sender, EventArgs e)
 		{
@@ -515,6 +525,58 @@ namespace Polygons
 			Refresh();
 		}
 		#endregion
+		private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+		{
+			if (unsaved)
+			{
+				DialogResult dialoresult = MessageBox.Show("You've got unsaved changes\nWould you like to save them?", "INFO", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+				switch (dialoresult)
+				{
+					case DialogResult.Yes:
+						saveAsToolStripMenuItem_Click(null, null);
+						break;
+					case DialogResult.No:
+						break;
+				}
+			}
+		}
+		private void Form1_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.Control && e.KeyCode == Keys.S)
+			{
+				saveToolStripMenuItem_Click(null, null);
+			}
+			else if(e.Control && e.KeyCode == Keys.O)
+			{
+				loadToolStripMenuItem_Click(null, null);
+			}
+			else if(e.Control && e.KeyCode == Keys.N)
+			{
+				newToolStripMenuItem_Click(null, null);
+			}
+			else if (e.Control && e.KeyCode == Keys.Z)
+			{
+				undoToolStripMenuItem_Click(null, null);
+			}
+			else if (e.Control && e.KeyCode == Keys.Back && e.KeyCode == Keys.Shift)
+			{
+				redoToolStripMenuItem_Click(null, null);
+			}
+			else if (e.Control && e.KeyCode == Keys.J)
+			{
+				byJarvisToolStripMenuItem.Checked = true;
+				byDefenitionToolStripMenuItem.Checked = false;
+			}
+			else if (e.Control && e.KeyCode == Keys.D)
+			{
+				byJarvisToolStripMenuItem.Checked = false;
+				byDefenitionToolStripMenuItem.Checked = true;
+			}
+			else if (e.Control && e.KeyCode == Keys.F2)
+			{
+				radiusToolStripMenuItem_Click(null, null);
+			}
+		}
 		private void timer1_Tick(object sender, EventArgs e)
 		{
 			if (byJarvisToolStripMenuItem.Checked)
