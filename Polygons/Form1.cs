@@ -175,6 +175,69 @@ namespace Polygons
 			triangleToolStripMenuItem1.Checked = false;
 			circleToolStripMenuItem.Checked = false;
 		}
+		private void fileNew()
+		{
+			try
+			{
+				figures.Clear();
+				figures.Add(new Circle(ClientSize.Width / 2, ClientSize.Height / 2));
+				Refresh();
+				saveToolStripMenuItem_Click(null, null);
+			}
+			catch (InvalidOperationException)
+			{
+				Log(DateTime.Now.ToString() + ": Save error(InvalidOperationException)");
+			}
+		}
+		private void fileSave()
+		{
+			try
+			{
+				unsaved = false;
+				this.Text = "Polygons";
+				stream = File.OpenWrite(DefaultFileName);
+				binFormat.Serialize(stream, figures);
+				stream.Close();
+
+			}
+			catch (InvalidOperationException)
+			{
+				Log(DateTime.Now.ToString() + ": Save error(InvalidOperationException)");
+			}
+		}
+		private void fileLoad()
+		{
+			try
+			{
+				SaveFileDialog saveDialog = new SaveFileDialog();
+
+				if (unsaved)
+				{
+					if (!saveDialog.CheckFileExists)
+					{
+						saveDialog.Filter = "All files (*.*)|*.*|data file *.dat|*.dat";
+						saveDialog.FilterIndex = 2;
+						saveDialog.ShowDialog();
+						UserFileName = saveDialog.FileName;
+						unsaved = false;
+						this.Text = "Polygons";
+					}
+				}
+				stream = File.OpenWrite(UserFileName);
+				binFormat.Serialize(stream, figures);
+				stream.Close();
+			}
+			catch (InvalidOperationException)
+			{
+				Log(DateTime.Now.ToString() + ": Save error(InvalidOperationException)");
+				MessageBox.Show("FATAL ERROR", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				Application.Exit();
+			}
+			catch (ArgumentException)
+			{
+				MessageBox.Show("Error: name must be set", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+		}
 		private void newToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			try
@@ -509,6 +572,7 @@ namespace Polygons
 		{
 			if (figures.Count < 1)
 				return;
+			
 			F_Redo.Push(figures);
 			MessageBox.Show("Redo " + F_Redo.Count.ToString());
 			figures.RemoveAt(figures.Count - 1);

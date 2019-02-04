@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Polygons
 {
-	interface IManager
+	public interface ICommand<T>
 	{
-		void Undo();
-		void Redo();
+		T Undo(T input);
+		T Redo(T input);
 	}
 }
