@@ -175,14 +175,14 @@ namespace Polygons
 			triangleToolStripMenuItem1.Checked = false;
 			circleToolStripMenuItem.Checked = false;
 		}
-		private void fileNew()
+		private void fileNew() 
 		{
 			try
 			{
 				figures.Clear();
 				figures.Add(new Circle(ClientSize.Width / 2, ClientSize.Height / 2));
 				Refresh();
-				saveToolStripMenuItem_Click(null, null);
+				fileSave();
 			}
 			catch (InvalidOperationException)
 			{
@@ -205,7 +205,7 @@ namespace Polygons
 				Log(DateTime.Now.ToString() + ": Save error(InvalidOperationException)");
 			}
 		}
-		private void fileLoad()
+		private void fileSaveAS()
 		{
 			try
 			{
@@ -238,70 +238,7 @@ namespace Polygons
 				MessageBox.Show("Error: name must be set", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			}
 		}
-		private void newToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			try
-			{
-				figures.Clear();
-				figures.Add(new Circle(ClientSize.Width / 2, ClientSize.Height / 2));
-				Refresh();
-				saveToolStripMenuItem_Click(null, null);
-			}
-			catch (InvalidOperationException)
-			{
-				Log(DateTime.Now.ToString() + ": Save error(InvalidOperationException)");
-			}
-		}
-		private void saveToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			try
-			{
-				unsaved = false;
-				this.Text = "Polygons";
-				stream = File.OpenWrite(DefaultFileName);
-				binFormat.Serialize(stream, figures);
-				stream.Close();
-
-			}
-			catch (InvalidOperationException)
-			{
-				Log(DateTime.Now.ToString() + ": Save error(InvalidOperationException)");
-			}
-		}
-		private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			try
-			{
-				SaveFileDialog saveDialog = new SaveFileDialog();
-				
-				if (unsaved)
-				{
-					if(!saveDialog.CheckFileExists)
-					{
-						saveDialog.Filter = "All files (*.*)|*.*|data file *.dat|*.dat";
-						saveDialog.FilterIndex = 2;
-						saveDialog.ShowDialog();
-						UserFileName = saveDialog.FileName;
-						unsaved = false;
-						this.Text = "Polygons";
-					}
-				}
-				stream = File.OpenWrite(UserFileName);
-				binFormat.Serialize(stream, figures);
-				stream.Close();
-			}
-			catch (InvalidOperationException)
-			{
-				Log(DateTime.Now.ToString() + ": Save error(InvalidOperationException)");
-				MessageBox.Show("FATAL ERROR", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				Application.Exit();
-			}
-			catch (ArgumentException)
-			{
-				MessageBox.Show("Error: name must be set", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-			}
-		}
-		private void loadToolStripMenuItem_Click(object sender, EventArgs e)
+		private void fileLoad()
 		{
 			try
 			{
@@ -320,6 +257,22 @@ namespace Polygons
 			{
 				Log(DateTime.Now.ToString() + ": Load error(InvalidOperationException)");
 			}
+		}
+		private void newToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			fileNew();
+		}
+		private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			fileSave();
+		}
+		private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			fileSaveAS();
+		}
+		private void loadToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			fileLoad();
 		}
 		private void radiusToolStripMenuItem_Click(object sender, EventArgs e)
 		{
@@ -609,15 +562,15 @@ namespace Polygons
 		{
 			if (e.Control && e.KeyCode == Keys.S)
 			{
-				saveToolStripMenuItem_Click(null, null);
+				fileSave();
 			}
 			else if(e.Control && e.KeyCode == Keys.O)
 			{
-				loadToolStripMenuItem_Click(null, null);
+				fileLoad();
 			}
 			else if(e.Control && e.KeyCode == Keys.N)
 			{
-				newToolStripMenuItem_Click(null, null);
+				fileNew();
 			}
 			else if (e.Control && e.KeyCode == Keys.Z)
 			{
