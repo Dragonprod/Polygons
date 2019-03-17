@@ -27,3 +27,7 @@ Z:\ООП\Polygons\Polygons\Polygons\obj\Debug\Polygons.Properties.Resources.res
 Z:\ООП\Polygons\Polygons\Polygons\obj\Debug\Polygons.csproj.GenerateResource.Cache
 D:\oop\10 класс\Polygons\Polygons\obj\Debug\Polygons.Form2.resources
 D:\OOP\10 класс\Polygons\Polygons\obj\Debug\Polygons.csproj.ResolveComReference.cache
+D:\OOP\10 класс\Polygons\Polygons\bin\Debug\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll
+D:\OOP\10 класс\Polygons\Polygons\bin\Debug\Shape.dll
+D:\OOP\10 класс\Polygons\Polygons\bin\Debug\Microsoft.VisualStudio.QualityTools.UnitTestFramework.xml
+D:\OOP\10 класс\Polygons\Polygons\bin\Debug\Shape.pdb

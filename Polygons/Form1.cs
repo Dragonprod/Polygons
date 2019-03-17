@@ -14,13 +14,16 @@ using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Reflection;
 
 namespace Polygons
 {
 	public partial class Form1 : Form
 	{
+		
 		bool unsaved = false;
 		List<Shape> figures = new List<Shape>();
+		List<string> plugins = new List<string>();
 		Stack<List<Shape>> F_Undo = new Stack<List<Shape>>();
 		Stack<List<Shape>> F_Redo = new Stack<List<Shape>>();
 		int _x, _y, RadMem = 20;
@@ -28,8 +31,7 @@ namespace Polygons
 		string UserFileName = null;
 		Form2 set_r;
 		Random rnd = new Random();
-		BinaryFormatter binFormat = new BinaryFormatter();
-		Stream stream;
+		//BinaryFormatter binFormat = new BinaryFormatter();
 		//Stopwatch timer = new Stopwatch();
 		//TimeSpan ts;
 
@@ -158,7 +160,6 @@ namespace Polygons
 					Refresh();
 				}
 			}
-
 		}
 		private void circleToolStripMenuItem_Click(object sender, EventArgs e)
 		{
@@ -179,23 +180,51 @@ namespace Polygons
 		{
 			try
 			{
-				figures.Clear();
-				figures.Add(new Circle(ClientSize.Width / 2, ClientSize.Height / 2));
-				Refresh();
-				fileSave();
+				FormClosingEventArgs closing = new FormClosingEventArgs(CloseReason.None, true);
+				if (unsaved)
+				{
+					DialogResult dialoresult = MessageBox.Show("You've got unsaved changes\nWould you like to save them?", "INFO", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+					switch (dialoresult)
+					{
+						case DialogResult.Yes:
+							fileSaveAS();
+							figures.Clear();
+							figures.Add(new Circle(ClientSize.Width / 2, ClientSize.Height / 2));
+							Shape.R = 20;
+							Shape.COL = Color.Red;
+							Shape.PEN = Color.Green;
+							Refresh();
+							break;
+						case DialogResult.No:
+							figures.Clear();
+							figures.Add(new Circle(ClientSize.Width / 2, ClientSize.Height / 2));
+							Shape.R = 20;
+							Shape.COL = Color.Red;
+							Shape.PEN = Color.Green;
+							Refresh();
+							break;
+						case DialogResult.Cancel: closing.Cancel = (dialoresult == DialogResult.Cancel); break;
+					}
+				}
 			}
 			catch (InvalidOperationException)
 			{
 				Log(DateTime.Now.ToString() + ": Save error(InvalidOperationException)");
+			}
+			catch (ArgumentException)
+			{
+				MessageBox.Show("Файл должен быть выбран\nПовторите операцию");
+				Log(DateTime.Now.ToString() + ": Load error(ArgumentException)");
 			}
 		}
 		private void fileSave()
 		{
 			try
 			{
+				BinaryFormatter binFormat = new BinaryFormatter();
 				unsaved = false;
 				this.Text = "Polygons";
-				stream = File.OpenWrite(DefaultFileName);
+				FileStream stream = new FileStream(DefaultFileName, FileMode.Create, FileAccess.Write);
 				binFormat.Serialize(stream, figures);
 				stream.Close();
 
@@ -203,6 +232,11 @@ namespace Polygons
 			catch (InvalidOperationException)
 			{
 				Log(DateTime.Now.ToString() + ": Save error(InvalidOperationException)");
+			}
+			catch (ArgumentException)
+			{
+				MessageBox.Show("Файл должен быть выбран\nПовторите операцию");
+				Log(DateTime.Now.ToString() + ": Load error(ArgumentException)");
 			}
 		}
 		private void fileSaveAS()
@@ -223,7 +257,8 @@ namespace Polygons
 						this.Text = "Polygons";
 					}
 				}
-				stream = File.OpenWrite(UserFileName);
+				BinaryFormatter binFormat = new BinaryFormatter();
+				FileStream stream = new FileStream(UserFileName, FileMode.Create, FileAccess.Write);
 				binFormat.Serialize(stream, figures);
 				stream.Close();
 			}
@@ -242,20 +277,27 @@ namespace Polygons
 		{
 			try
 			{
+				BinaryFormatter binFormat = new BinaryFormatter();
 				OpenFileDialog openDialog = new OpenFileDialog();
 				openDialog.Filter = "All files (*.*)|*.*|data file *.dat|*.dat";
 				openDialog.FilterIndex = 2;
 				openDialog.ShowDialog();
 				unsaved = false;
 				UserFileName = openDialog.FileName;
-				stream = File.OpenRead(UserFileName);
+				FileStream stream = new FileStream(UserFileName, FileMode.Open, FileAccess.Read);
 				figures = (List<Shape>)binFormat.Deserialize(stream);
+				
 				Refresh();
 				stream.Close();
 			}
 			catch (InvalidOperationException)
 			{
 				Log(DateTime.Now.ToString() + ": Load error(InvalidOperationException)");
+			}
+			catch (ArgumentException)
+			{
+				MessageBox.Show("Файл должен быть выбран\nПовторите операцию");
+				Log(DateTime.Now.ToString() + ": Load error(ArgumentException)");
 			}
 		}
 		private void newToolStripMenuItem_Click(object sender, EventArgs e)
@@ -288,30 +330,24 @@ namespace Polygons
 		}
 		private void Set_r_RC(object sender, RadiusEventArgs e)
 		{
-			foreach (Shape p in figures)
-			{
-				p.RADIUS = e.Radius;
-				Refresh();
-			}
+			Shape.R = e.Radius;
 			RadMem = e.Radius;
+			Refresh();
+			unsaved = true;
 		}
 		private void insideToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			colorDialog1.ShowDialog();
-			foreach (Shape p1 in figures)
-			{
-				p1.COL = colorDialog1.Color;
-				Refresh();
-			}
+			Shape.COL = colorDialog1.Color;
+			Refresh();
+			unsaved = true;
 		}
 		private void outsideToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			colorDialog1.ShowDialog();
-			foreach (Shape p1 in figures)
-			{
-				p1.PEN = colorDialog1.Color;
-				Refresh();
-			}
+			Shape.PEN = colorDialog1.Color;
+			Refresh();
+			unsaved = true;
 		}
 		bool IsinConvexHull(int mouse_X, int mouse_Y)
 		{
@@ -471,33 +507,6 @@ namespace Polygons
 				Refresh();
 			}
 		}
-		private void button1_Click(object sender, EventArgs e)
-		{
-			try
-			{
-				if (int.Parse(textBox1.Text) <= 0) throw new IndexOutOfRangeException();
-				timer1.Interval = int.Parse(textBox1.Text);
-				timer1.Enabled = true;
-			}
-			catch (FormatException)
-			{
-				textBox1.Text = null;
-				timer1.Enabled = false;
-				MessageBox.Show("Error: Only numbers\nInterval must be set", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-			}
-			catch (IndexOutOfRangeException)
-			{
-				textBox1.Text = null;
-				timer1.Enabled = false;
-				MessageBox.Show("Error: Interval must be > or = 0", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-			}
-		}
-		private void button2_Click(object sender, EventArgs e)
-		{
-			timer1.Enabled = false;
-
-		}
 		private void textBox1_TextChanged(object sender, EventArgs e)
 		{
 			try
@@ -523,6 +532,7 @@ namespace Polygons
 		#region UNDO_REDO
 		private void undoToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+
 			if (figures.Count < 1)
 				return;
 			
@@ -547,7 +557,7 @@ namespace Polygons
 		{
 			if (unsaved)
 			{
-				DialogResult dialoresult = MessageBox.Show("You've got unsaved changes\nWould you like to save them?", "INFO", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+				DialogResult dialoresult = MessageBox.Show("You've got unsaved changes\nWould you like to save them?", "INFO", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
 				switch (dialoresult)
 				{
 					case DialogResult.Yes:
@@ -555,8 +565,35 @@ namespace Polygons
 						break;
 					case DialogResult.No:
 						break;
+					case DialogResult.Cancel: e.Cancel = (dialoresult == DialogResult.Cancel); break;
 				}
 			}
+		}
+		private void playToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			try
+			{
+				if (int.Parse(textBox1.Text) <= 0) throw new IndexOutOfRangeException();
+				timer1.Interval = int.Parse(textBox1.Text);
+				timer1.Enabled = true;
+			}
+			catch (FormatException)
+			{
+				textBox1.Text = null;
+				timer1.Enabled = false;
+				MessageBox.Show("Error: Only numbers\nInterval must be set", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+			}
+			catch (IndexOutOfRangeException)
+			{
+				textBox1.Text = null;
+				timer1.Enabled = false;
+				MessageBox.Show("Error: Interval must be > or = 0", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			}
+		}
+		private void stopToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			timer1.Enabled = false;
 		}
 		private void Form1_KeyDown(object sender, KeyEventArgs e)
 		{
